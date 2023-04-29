@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>拖拽</title>
+    <style>
+      .container {
+        display: flex;
+        justify-content: center;
+        margin-top: 100px;
+      }
+
+      .draw-box {
+        width: 80%;
+        height: 500px;
+        border: 2px solid pink;
+      }
+
+      #draw {
+        width: 80px;
+        height: 80px;
+        background: pink;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="draw-box" id="draw-box">
+        <div id="draw"></div>
+      </div>
+    </div>
+    <script>
+      const drawBox = document.getElementById("draw-box");
+      const draw = document.getElementById("draw");
+      const mouse = {
+        down: false,
+        startX: 0,
+        endY: 0,
+        moveX: 0,
+        moveY: 0,
+        boundary: {}, //边界
+      };
+      function getDrawBoundary() {
+        const { top, left, right, bottom, width } =
+          drawBox.getBoundingClientRect();
+        const drawWidth = draw.offsetWidth;
+        const drawHeight = draw.offsetHeight;
+        mouse.boundary = {
+          right: right - left - drawWidth,
+          bottom: bottom - top - drawHeight,
+        };
+      }
+      getDrawBoundary();
+      draw.onmousedown = (event) => {
+        mouse.startX = event.x - mouse.startX;
+        mouse.endY = event.y - mouse.endY;
+        mouse.down = true;
+        console.log("down", mouse);
+      };
+      window.onmousemove = (event) => {
+        if (!mouse.down) {
+          return;
+        }
+        const { right, bottom, top } = mouse.boundary;
+        console.log(event.x - mouse.startX, right);
+        const moveX = Math.max(Math.min(event.x - mouse.startX, right), 0);
+        const moveY = Math.max(Math.min(event.y - mouse.endY, bottom), 0);
+        mouse.moveX = moveX;
+        mouse.moveY = moveY;
+        draw.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      };
+      window.onmouseup = (event) => {
+        event.preventDefault();
+
+        if (!mouse.down) {
+          return;
+        }
+        mouse.down = false;
+        mouse.startX = mouse.moveX;
+        mouse.endY = mouse.moveY;
+      };
+    </script>
+  </body>
+</html>
