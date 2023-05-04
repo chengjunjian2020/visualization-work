@@ -16,6 +16,7 @@
         width: 80%;
         height: 500px;
         border: 2px solid pink;
+        position: relative;
       }
 
       #draw {
@@ -30,10 +31,41 @@
   <body>
     <div class="container">
       <div class="draw-box" id="draw-box">
-        <div id="draw"></div>
+        <!-- <div id="draw"></div> -->
       </div>
     </div>
-    <script>
+    <script type="module" src="./js/draw.js"></script>
+    <script type="module">
+      import { Draw } from "./js/draw.js";
+      const drawBox = document.getElementById("draw-box");
+      const draw = new Draw(drawBox, [
+        {
+          tagName: "div",
+          style: {
+            width: "70px",
+            height: "70px",
+            backgroundColor: "pink",
+          },
+          position: {
+            x: 1200,
+            y: -10,
+          },
+        },
+        {
+          tagName: "div",
+          style: {
+            width: "70px",
+            height: "70px",
+            backgroundColor: "red",
+          },
+          position: {
+            x: 1200,
+            y: -10,
+          },
+        },
+      ]);
+    </script>
+    <!-- <script>
       const drawBox = document.getElementById("draw-box");
       const draw = document.getElementById("draw");
       const mouse = {
@@ -59,14 +91,12 @@
         mouse.startX = event.x - mouse.startX;
         mouse.endY = event.y - mouse.endY;
         mouse.down = true;
-        console.log("down", mouse);
       };
       window.onmousemove = (event) => {
         if (!mouse.down) {
           return;
         }
         const { right, bottom, top } = mouse.boundary;
-        console.log(event.x - mouse.startX, right);
         const moveX = Math.max(Math.min(event.x - mouse.startX, right), 0);
         const moveY = Math.max(Math.min(event.y - mouse.endY, bottom), 0);
         mouse.moveX = moveX;
@@ -83,6 +113,6 @@
         mouse.startX = mouse.moveX;
         mouse.endY = mouse.moveY;
       };
-    </script>
+    </script> -->
   </body>
 </html>
