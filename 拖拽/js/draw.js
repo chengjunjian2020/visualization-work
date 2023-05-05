@@ -1,9 +1,11 @@
 export class Draw {
   drawList = [];
+  drawBox;
   constructor(drawBox, draw) {
     if (!draw) {
       throw new Error("未传入draw参数");
     }
+    this.drawBox = drawBox;
     if (draw.constructor === Array) {
       this.drawList = draw.map((drawItem) => new DrawItem(drawBox, drawItem));
     } else {
@@ -13,11 +15,13 @@ export class Draw {
   }
   bindDrawDown() {
     window.onmousedown = () => {
-      console.log(this.drawList);
       this.drawList.forEach((drawItem) => {
         drawItem.draw.style.zIndex = 0;
       });
     };
+  }
+  add(draw) {
+    this.drawList.push(new DrawItem(this.drawBox, draw));
   }
 }
 export class DrawItem {

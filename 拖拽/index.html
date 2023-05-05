@@ -8,17 +8,27 @@
     <style>
       .container {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         margin-top: 100px;
       }
 
       .draw-box {
         width: 80%;
-        height: 500px;
+        height: 300px;
         border: 2px solid pink;
         position: relative;
       }
-
+      /* .draw-box::before {
+        content: "";
+        border: 2px solid red;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 96%;
+        height: 96%;
+      } */
       #draw {
         width: 80px;
         height: 80px;
@@ -30,15 +40,16 @@
 
   <body>
     <div class="container">
-      <div class="draw-box" id="draw-box">
-        <!-- <div id="draw"></div> -->
-      </div>
+      <div class="draw-box" id="draw-box"></div>
+      <div class="draw-box" id="draw-box2"></div>
+      <button id="addDraw">增加</button>
     </div>
     <script type="module" src="./js/draw.js"></script>
     <script type="module">
-      import { Draw } from "./js/draw.js";
+      import { Draw, DrawItem } from "./js/draw.js";
       const drawBox = document.getElementById("draw-box");
-      const draw = new Draw(drawBox, [
+      const drawBox2 = document.getElementById("draw-box2");
+      const draw1 = new Draw(drawBox, [
         {
           tagName: "div",
           style: {
@@ -51,6 +62,8 @@
             y: -10,
           },
         },
+      ]);
+      const draw2 = new Draw(drawBox2, [
         {
           tagName: "div",
           style: {
@@ -64,6 +77,34 @@
           },
         },
       ]);
+      document.getElementById("addDraw").onclick = () => {
+        // const addDraw = new Draw(drawBox, [
+        // {
+        //   tagName: "div",
+        //   style: {
+        //     width: "70px",
+        //     height: "70px",
+        //     backgroundColor: "black",
+        //   },
+        //   position: {
+        //     x: 0,
+        //     y: 0,
+        //   },
+        // },
+        // ]);
+        draw.add({
+          tagName: "div",
+          style: {
+            width: "70px",
+            height: "70px",
+            backgroundColor: "red",
+          },
+          position: {
+            x: 0,
+            y: 0,
+          },
+        });
+      };
     </script>
     <!-- <script>
       const drawBox = document.getElementById("draw-box");
