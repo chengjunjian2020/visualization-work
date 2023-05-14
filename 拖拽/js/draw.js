@@ -1,17 +1,22 @@
 export class Draw {
   drawList = [];
   drawBox;
+  boundary = {};
   constructor(drawBox, draw) {
     if (!draw) {
       throw new Error("未传入draw参数");
     }
-    this.drawBox = drawBox;
+    this.drawBox = this.setDrawBoundary(drawBox);
     if (draw.constructor === Array) {
       this.drawList = draw.map((drawItem) => new DrawItem(drawBox, drawItem));
     } else {
       this.drawList.push(new DrawItem(drawBox, draw));
     }
     this.bindDrawDown();
+  }
+  setDrawBoundary(drawBox) {
+    drawBox._boundary = drawBox.getBoundingClientRect();
+    return drawBox;
   }
   bindDrawDown() {
     window.onmousedown = () => {
@@ -71,7 +76,7 @@ export class DrawItem {
   //初始化mouse边界相关信息
   getDrawBoundary() {
     const { drawBox, mouse, draw } = this;
-    const { top, left, right, bottom } = drawBox.getBoundingClientRect();
+    const { top, left, right, bottom } = drawBox._boundary; //获取父元素相关位置信息
     const drawWidth = draw.offsetWidth;
     const drawHeight = draw.offsetHeight;
     mouse.boundary = {
