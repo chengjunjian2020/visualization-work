@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>下拉刷新</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      .pull-to-refresh-wrapper {
+      }
+      .pull-to-refresh-head {
+        overflow: hidden;
+        font-size: 13px;
+        color: #999;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        position: relative;
+        bottom: 10px;
+      }
+      .pull-to-refresh-list {
+      }
+      .item {
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+      }
+      .item:nth-child(1) {
+        border-top: 1px solid #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pull-to-refresh-wrapper">
+      <div class="pull-to-refresh-head" id="head">下拉刷新</div>
+      <div class="pull-to-refresh-list" id="list">
+        <div class="item">dolore2</div>
+        <div class="item">dolore1</div>
+        <div class="item">dolore</div>
+        <div class="item">dolore1</div>
+        <div class="item">dolore</div>
+        <div class="item">dolore</div>
+        <div class="item">dolore</div>
+        <div class="item">dolore</div>
+        <div class="item">dolore</div>
+        <div class="item">dolore</div>
+        <div class="item">dolore</div>
+        <div class="item">dolore</div>
+        <div class="item">dolore</div>
+        <div class="item">dolore</div>
+        <div class="item">dolore</div>
+      </div>
+    </div>
+    <script>
+      /**
+       * https://mobile.ant.design/~demos/pull-to-refresh-demo1/
+       * 下拉刷新组件
+       * 视差效果
+       * 拖拽到一定距离文字发生变化-- 没做完
+       * 弹性动画效果 --ok
+       * 刷新的时候还要进行请求接口数据 -- 没做完
+       * 鼠标拖动与上面距离没有保持一致 后面移动速度越来越慢 -- ok
+       **/
+      function $(id) {
+        return document.querySelectorAll(id);
+      }
+      let touch = {
+        start: 0,
+        targetTouches: null,
+      };
+      $("#list")[0].addEventListener("touchstart", (e) => {
+        touch.targetTouches = e.targetTouches;
+        touch.start = e.targetTouches[0].pageY;
+      });
+      $("#list")[0].addEventListener("touchmove", (e) => {
+        let headHeight = e.targetTouches[0].pageY - touch.start;
+        headHeight = headHeight < 20 ? headHeight : 20 + (headHeight - 20) / 5;
+
+        $("#head")[0].style.height = `${headHeight}px`;
+      });
+      $("#list")[0].addEventListener("touchend", (e) => {
+        touch = {
+          start: 0,
+          targetTouches: null,
+        };
+        $("#head")[0].style.height = `40px`;
+        $("#head")[0].style.transition = `all 0.7s`;
+        setTimeout(() => {
+          $("#head")[0].style.transition = "none";
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
