@@ -11,24 +11,13 @@
         margin: 0;
         padding: 0;
       }
-      .pull-to-refresh-wrapper {
-      }
-      .pull-to-refresh-list {
-      }
-      .item {
-        padding: 12px 0;
-        border-bottom: 1px solid #eee;
-      }
-      .item:nth-child(1) {
-        border-top: 1px solid #eee;
-      }
     </style>
   </head>
   <body>
     <div class="pull-to-refresh-wrapper">
       <!-- <div class="pull-to-refresh-head" id="head">下拉刷新</div> -->
       <div class="pull-to-refresh-list" id="list">
-        <div class="item">dolore2</div>
+        <!-- <div class="item">dolore2</div>
         <div class="item">dolore1</div>
         <div class="item">dolore</div>
         <div class="item">dolore1</div>
@@ -42,19 +31,47 @@
         <div class="item">dolore</div>
         <div class="item">dolore</div>
         <div class="item">dolore</div>
-        <div class="item">dolore</div>
+        <div class="item">dolore</div> -->
       </div>
     </div>
     <script type="module">
       import { ScrollLoad } from "./js/scrollLoad.js";
+      const container = document.querySelector(".pull-to-refresh-wrapper");
+      const content = document.querySelector(".pull-to-refresh-list");
       const scrollLoad = new ScrollLoad({
-        container: document.querySelector(".pull-to-refresh-wrapper"),
-        content: document.querySelector(".pull-to-refresh-list"),
+        container,
+        content,
         pullRefresh: function () {
           return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-            }, 2000);
+            resolve([
+              {
+                text: "scroll1",
+              },
+              {
+                text: "scroll2",
+              },
+              {
+                text: "scroll3",
+              },
+              {
+                text: "scroll4",
+              },
+              {
+                text: "scroll5",
+              },
+              {
+                text: "scroll6",
+              },
+              {
+                text: "scroll7",
+              },
+              {
+                text: "scroll8",
+              },
+              {
+                text: "scroll9",
+              },
+            ]);
           });
         },
       });

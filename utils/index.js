@@ -7,3 +7,6 @@ export const isDom = (el) => {
         obj.nodeType === 1 &&
         typeof obj.nodeName === "string";
 };
+export const isArray = (array) => {
+  return array.constructor === Array;
+};
