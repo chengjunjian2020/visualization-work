@@ -5,22 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>下拉刷新</title>
+    <link rel="stylesheet" type="text/css" href="./css/scrollLoad.css" />
     <style>
       * {
         margin: 0;
         padding: 0;
       }
       .pull-to-refresh-wrapper {
-      }
-      .pull-to-refresh-head {
-        overflow: hidden;
-        font-size: 13px;
-        color: #999;
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        position: relative;
-        bottom: 10px;
       }
       .pull-to-refresh-list {
       }
@@ -35,7 +26,7 @@
   </head>
   <body>
     <div class="pull-to-refresh-wrapper">
-      <div class="pull-to-refresh-head" id="head">下拉刷新</div>
+      <!-- <div class="pull-to-refresh-head" id="head">下拉刷新</div> -->
       <div class="pull-to-refresh-list" id="list">
         <div class="item">dolore2</div>
         <div class="item">dolore1</div>
@@ -54,7 +45,22 @@
         <div class="item">dolore</div>
       </div>
     </div>
-    <script>
+    <script type="module">
+      import { ScrollLoad } from "./js/scrollLoad.js";
+      const scrollLoad = new ScrollLoad({
+        container: document.querySelector(".pull-to-refresh-wrapper"),
+        content: document.querySelector(".pull-to-refresh-list"),
+        pullRefresh: function () {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve();
+            }, 2000);
+          });
+        },
+      });
+      console.log(scrollLoad);
+    </script>
+    <!-- <script>
       /**
        * https://mobile.ant.design/~demos/pull-to-refresh-demo1/
        * 下拉刷新组件
@@ -92,6 +98,6 @@
           $("#head")[0].style.transition = "none";
         }, 1000);
       });
-    </script>
+    </script> -->
   </body>
 </html>

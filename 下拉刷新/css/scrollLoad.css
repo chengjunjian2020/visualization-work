@@ -1,0 +1,10 @@
+.pull-to-refresh-head {
+  overflow: hidden;
+  font-size: 13px;
+  color: #999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  bottom: 10px;
+}
