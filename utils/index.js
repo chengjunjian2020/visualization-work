@@ -7,6 +7,13 @@ export const isDom = (el) => {
         obj.nodeType === 1 &&
         typeof obj.nodeName === "string";
 };
+//判断是否是一个数组
 export const isArray = (array) => {
   return array.constructor === Array;
+};
+
+export const createCanvasContext = (id) => {
+  let el = typeof id === "string" ? document.querySelector(id) : id;
+  const context = el.getContext("2d");
+  return context;
 };
