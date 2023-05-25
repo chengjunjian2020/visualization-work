@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style type="text/css">
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      .chart-wrap {
+        height: calc(100% - 40px);
+        min-height: 500px;
+        min-width: 500px;
+        margin: 20px;
+        box-shadow: 0 0 3px orange;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="my-canvas" width="400" height="400"></canvas>
+  </body>
+  <script type="text/javascript">
+    var canvas = document.getElementById("my-canvas");
+    var ctx = canvas.getContext("2d");
+
+    // 贝塞尔曲线控制点
+    var controlPoints = [
+      { x: 50, y: 200 },
+      { x: 200, y: 50 },
+      { x: 350, y: 200 },
+      { x: 380, y: 220 },
+    ];
+
+    // 绘制贝塞尔曲线
+    function drawCurve() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.moveTo(controlPoints[0].x, controlPoints[0].y);
+      ctx.bezierCurveTo(
+        controlPoints[1].x,
+        controlPoints[1].y,
+        controlPoints[2].x,
+        controlPoints[2].y,
+        controlPoints[3].x,
+        controlPoints[3].y
+      );
+      ctx.stroke();
+    }
+
+    // 判断鼠标是否在控制点上
+    function isMouseOnControlPoint(x, y) {
+      for (var i = 0; i < controlPoints.length; i++) {
+        var dx = x - controlPoints[i].x;
+        var dy = y - controlPoints[i].y;
+        var distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 10) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    // 监听鼠标移动事件
+    canvas.addEventListener("mousemove", function (e) {
+      var mouseX = e.clientX - canvas.offsetLeft;
+      var mouseY = e.clientY - canvas.offsetTop;
+
+      // 判断是否在控制点上拖拽
+      if (draggingControlPointIndex > -1) {
+        controlPoints[draggingControlPointIndex].x = mouseX;
+        controlPoints[draggingControlPointIndex].y = mouseY;
+        drawCurve();
+      }
+    });
+
+    // 监听鼠标按下事件
+    canvas.addEventListener("mousedown", function (e) {
+      var mouseX = e.clientX - canvas.offsetLeft;
+      var mouseY = e.clientY - canvas.offsetTop;
+
+      // 判断是否在控制点上点击
+      var index = isMouseOnControlPoint(mouseX, mouseY);
+      if (index > -1) {
+        draggingControlPointIndex = index;
+      }
+    });
+
+    // 监听鼠标松开事件
+    canvas.addEventListener("mouseup", function (e) {
+      draggingControlPointIndex = -1;
+    });
+
+    // 初始化绘制
+    var draggingControlPointIndex = -1;
+    drawCurve();
+  </script>
+</html>
