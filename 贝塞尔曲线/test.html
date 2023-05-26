@@ -25,7 +25,9 @@
   <script type="text/javascript">
     var canvas = document.getElementById("my-canvas");
     var ctx = canvas.getContext("2d");
-
+    ctx.moveTo(0, 30);
+    ctx.lineTo(20, 100);
+    ctx.stroke();
     // 贝塞尔曲线控制点
     var controlPoints = [
       { x: 50, y: 200 },
