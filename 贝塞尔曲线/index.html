@@ -55,17 +55,41 @@
         left: 4px;
         color: rgba(0, 0, 0, 0.6);
       }
+      .control-point {
+        position: absolute;
+        z-index: 1;
+        height: 20px;
+        width: 20px;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        margin: -10px 0 0 -10px;
+        outline: none;
+        box-sizing: border-box;
+        border-radius: 10px;
+      }
+      #p0 {
+        top: 210px;
+        left: 42px;
+      }
+      #p1 {
+        bottom: 292px;
+        right: 94px;
+      }
+      #bezierContainer {
+        width: 300px;
+        height: 600px;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="coord">
-        <div class="y">(0%)</div>
-        <canvas id="canvas" width="300" height="600"></canvas>
-        <div class="x">(0%)</div>
+        <!-- <div class="y">(0%)</div> -->
+        <div class="relative" id="bezierContainer">
+          <canvas id="canvas"></canvas>
+        </div>
+        <!-- <div class="x">(0%)</div> -->
       </div>
     </div>
     <script type="module" src="./js/index.js"></script>
-    <!-- <script type="module" src="./js/demo.js"></script> -->
   </body>
 </html>
