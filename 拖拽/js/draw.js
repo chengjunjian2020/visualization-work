@@ -32,6 +32,7 @@ export class Draw {
 export class DrawItem {
   drawBox;
   draw;
+  drawInfo;
   mouse = {
     down: false,
     startX: 0,
@@ -48,7 +49,7 @@ export class DrawItem {
     this.draw = draw;
     this.getDrawBoundary();
     this.initDrawPosition(draw, el.position, this.mouse);
-    this.drawBindEvent();
+    this.drawBindEvent(el.dragCallback);
   }
   //初始化位置
   initDrawPosition(draw, position = {}, mouse) {
@@ -63,14 +64,22 @@ export class DrawItem {
   }
   //初始化拖拽DOM信息
   initDrawDom(drawBox, el) {
-    const { tagName = "div", className = "", style = {} } = el;
+    const { tagName = "div", className = "", id, style = {} } = el;
     const draw = document.createElement(tagName);
     draw.setAttribute("class", className);
+    if (id) {
+      draw.setAttribute("id", id);
+    }
     Object.keys(style).forEach((key) => {
       draw.style[key] = style[key];
     });
     draw.style.position = "absolute";
     drawBox.appendChild(draw);
+    this.drawInfo = {
+      el: draw,
+      name: id || new Date().getTime(),
+      parent: drawBox,
+    };
     return draw;
   }
   //初始化mouse边界相关信息
@@ -85,14 +94,14 @@ export class DrawItem {
     };
   }
   //绑定拖拽事件
-  drawBindEvent() {
+  drawBindEvent(dragCallback) {
     const { draw } = this;
     draw.onmousedown = (event) => {
       this.calculateDown(event);
       //当存在多个实例时，绑定的函数会被覆盖每次鼠标按下事件回重新进行绑定
       window.onmousemove = (event) => {
         event.preventDefault();
-        this.calculateMove(event);
+        this.calculateMove(event, dragCallback);
       };
       window.onmouseup = (event) => {
         event.preventDefault();
@@ -115,18 +124,21 @@ export class DrawItem {
       draw.style.zIndex = 1;
     });
   }
-  calculateMove(event) {
+  calculateMove(event, dragCallback) {
     const { mouse, draw } = this;
     if (!mouse.down) {
       return;
     }
     const { right, bottom } = mouse.boundary;
+    console.log(right);
+    console.log(event.x - mouse.startX);
     const moveX = Math.max(Math.min(event.x - mouse.startX, right), 0);
     const moveY = Math.max(Math.min(event.y - mouse.endY, bottom), 0);
     mouse.moveX = moveX;
     mouse.moveY = moveY;
     draw.style.left = `${moveX}px`;
     draw.style.top = `${moveY}px`;
+    dragCallback && dragCallback(this.drawInfo, { left: moveX, top: moveY });
   }
   calculateUp() {
     const { mouse } = this;
