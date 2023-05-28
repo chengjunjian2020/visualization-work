@@ -17,3 +17,7 @@ export const createCanvasContext = (id) => {
   const context = el.getContext("2d");
   return context;
 };
+
+export const $ = (id) => {
+  return document.querySelector(id);
+};
