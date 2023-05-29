@@ -1,4 +1,3 @@
-import { createCanvasContext } from "../../utils/index.js";
 import { DrawCanvas } from "../../utils/drawCanvas.js";
 import { Draw } from "../../拖拽/js/draw.js";
 (function () {
