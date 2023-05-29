@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>K线图</title>
+  </head>
+  <body>
+    <canvas id="k-chart"></canvas>
+    <script type="module">
+      import { DrawCanvas } from "../utils/drawCanvas.js";
+      import kData from "./mock.js";
+      const ctxStyle = {
+        font: 14,
+        fillStyle: "red",
+      };
+      const drawCanvas = new DrawCanvas(
+        {
+          id: "#k-chart",
+          width: 800,
+          height: 700,
+        },
+        ctxStyle
+      );
+      const coordX = {
+        x1: 40,
+        y1: 680,
+        x2: 760,
+        y2: 680,
+      };
+      const coordY = {
+        x1: 40,
+        y1: 680,
+        x2: 40,
+        y2: 40,
+      };
+      function drawCoords() {
+        //X
+        drawCanvas.lineTo(coordX);
+        //Y
+        drawCanvas.lineTo(coordY);
+
+        drawCoordsY(coordY.y2, coordY.y1);
+      }
+      function drawCoordsY(start, end) {
+        const [max, min] = kData.reduce(
+          ([max, min], cur) => {
+            const _max = Math.max(...cur);
+            const _min = Math.min(...cur);
+            return [_max, _min];
+          },
+          [0, 0]
+        );
+        const residue = parseInt((max - min) / 4);
+        const yList = [parseInt(min - residue)];
+        const yCoords = [50];
+        for (let i = 0; i <= 3; i++) {
+          yList.push(yList[yList.length - 1] + residue);
+        }
+        for (let i = 1; i < 5; i++) {
+          yCoords.push(parseInt(coordY.y1 / 4) * i);
+        }
+        yCoords.reverse();
+        for (let i in yCoords) {
+          console.log({
+            text: yList[i],
+            x: coordX.x1 - 40,
+            y: yCoords[i],
+          });
+          drawCanvas.drawText({
+            text: yList[i],
+            x: coordX.x1 - 40,
+            y: yCoords[i],
+          });
+        }
+      }
+      drawCoords();
+    </script>
+  </body>
+</html>

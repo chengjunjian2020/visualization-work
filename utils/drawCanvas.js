@@ -46,13 +46,19 @@ export class DrawCanvas {
   }
   bezierCurveTo({ _x, _y, cp1x, cp1y, cp2x, cp2y, x, y }, styleInfo) {
     const { ctx } = this;
-
     this.setCtxAttribute(styleInfo);
 
     ctx.beginPath();
     ctx.moveTo(_x, _y);
     ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
     ctx.stroke();
+    this.setCtxAttribute();
+  }
+  drawText({ text, x, y }, styleInfo) {
+    const { ctx } = this;
+
+    this.setCtxAttribute(styleInfo);
+    ctx.fillText(text, x, y);
     this.setCtxAttribute();
   }
   clearCanvas() {
