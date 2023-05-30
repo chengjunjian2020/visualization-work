@@ -11,8 +11,10 @@ export class DrawCanvas {
       throw new Error("请传入canvasid");
     }
     this.canvasObj = this.initCanvasObj(canvasObj);
-    this.ctxStyle = this.setCtxAttribute(ctxStyle);
+    console.log("--");
     this.ctx = this.createCanvasContext(canvasObj.id);
+    this.ctxStyle = this.setCtxAttribute(ctxStyle);
+
     this.setCtxAttribute(ctxStyle);
   }
   initCanvasObj(canvasObj) {
@@ -25,16 +27,19 @@ export class DrawCanvas {
   createCanvasContext = (id) => {
     let el = typeof id === "string" ? document.querySelector(id) : id;
     const context = el.getContext("2d");
+    console.log(context);
     return context;
   };
-  setCtxAttribute(info = this.ctxStyle) {
-    if (typeof drawInfo !== "object") {
+  setCtxAttribute = (info = this.ctxStyle) => {
+    if (typeof info !== "object") {
       return;
     }
+    console.dir(this);
     Object.keys(info).forEach((key) => {
+      console.log(this.ctx);
       this.ctx[key] = info[key];
     });
-  }
+  };
   lineTo({ x1, y1, x2, y2 }, styleInfo) {
     const { ctx } = this;
     this.setCtxAttribute(styleInfo);
