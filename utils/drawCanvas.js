@@ -11,14 +11,12 @@ export class DrawCanvas {
       throw new Error("请传入canvasid");
     }
     this.canvasObj = this.initCanvasObj(canvasObj);
-    console.log("--");
     this.ctx = this.createCanvasContext(canvasObj.id);
     this.ctxStyle = this.setCtxAttribute(ctxStyle);
 
     this.setCtxAttribute(ctxStyle);
   }
   initCanvasObj(canvasObj) {
-    console.log(canvasObj);
     const { id, width = 100, height = 100 } = canvasObj;
     $(id).width = width;
     $(id).height = height;
@@ -27,7 +25,6 @@ export class DrawCanvas {
   createCanvasContext = (id) => {
     let el = typeof id === "string" ? document.querySelector(id) : id;
     const context = el.getContext("2d");
-    console.log(context);
     return context;
   };
   setCtxAttribute = (info = this.ctxStyle) => {

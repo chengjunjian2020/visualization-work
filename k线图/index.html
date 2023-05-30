@@ -10,10 +10,10 @@
     <canvas id="k-chart"></canvas>
     <script type="module">
       import { DrawCanvas } from "../utils/drawCanvas.js";
-      import kData from "./mock.js";
+      import { yData } from "./mock.js";
       const ctxStyle = {
         font: 14,
-        fillStyle: "red",
+        fillStyle: "#666",
       };
       const drawCanvas = new DrawCanvas(
         {
@@ -44,7 +44,7 @@
         drawCoordsY(coordY.y2, coordY.y1);
       }
       function drawCoordsY(start, end) {
-        const [max, min] = kData.reduce(
+        const [max, min] = yData.reduce(
           ([max, min], cur) => {
             const _max = Math.max(...cur);
             const _min = Math.min(...cur);
