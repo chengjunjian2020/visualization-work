@@ -10,7 +10,7 @@
     <canvas id="k-chart"></canvas>
     <script type="module">
       import { DrawCanvas } from "../utils/drawCanvas.js";
-      import { yData } from "./mock.js";
+      import { yData, xData } from "./mock.js";
       const ctxStyle = {
         font: 14,
         fillStyle: "#666",
@@ -63,11 +63,6 @@
         }
         yCoords.reverse();
         for (let i in yCoords) {
-          console.log({
-            text: yList[i],
-            x: coordX.x1 - 40,
-            y: yCoords[i],
-          });
           drawCanvas.drawText({
             text: yList[i],
             x: coordX.x1 - 40,
@@ -75,6 +70,23 @@
           });
         }
       }
+      function drawCoordsX(xData) {
+        const coordsLength = coordY.y1 - coordY.y2;
+        const residue = parseInt(coordsLength / (xData.length - 1));
+        const xCoords = [50];
+        xData.slice(1).forEach((_, i) => {
+          xCoords.push(xCoords[xCoords.length - 1] + residue);
+        });
+        console.log(xCoords);
+        xData.forEach((number, i) => {
+          drawCanvas.drawText({
+            text: number,
+            x: xCoords[i],
+            y: coordY.y1 + 20,
+          });
+        });
+      }
+      drawCoordsX(xData);
       drawCoords();
     </script>
   </body>
