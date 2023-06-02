@@ -9,6 +9,7 @@
   <body>
     <canvas id="k-chart"></canvas>
     <script type="module">
+      //TODO 计算坐标轴和坐标轴刻度悠问题
       import { DrawCanvas } from "../utils/drawCanvas.js";
       import { yData, xData } from "./mock.js";
       const ctxStyle = {
@@ -40,17 +41,15 @@
         drawCanvas.lineTo(coordX);
         //Y
         drawCanvas.lineTo(coordY);
-
-        drawCoordsY(coordY.y2, coordY.y1);
       }
       function drawCoordsY(start, end) {
         const [max, min] = yData.reduce(
           ([max, min], cur) => {
-            const _max = Math.max(...cur);
-            const _min = Math.min(...cur);
+            const _max = Math.max(...cur, max);
+            const _min = Math.min(...cur, min);
             return [_max, _min];
           },
-          [0, 0]
+          [Number.MIN_VALUE, Number.MAX_VALUE]
         );
         const residue = parseInt((max - min) / 4);
         const yList = [parseInt(min - residue)];
@@ -69,6 +68,10 @@
             y: yCoords[i],
           });
         }
+        return {
+          axis: yList, //刻度
+          position: yCoords, //位置
+        };
       }
       function drawCoordsX(xData) {
         const coordsLength = coordY.y1 - coordY.y2;
@@ -77,7 +80,6 @@
         xData.slice(1).forEach((_, i) => {
           xCoords.push(xCoords[xCoords.length - 1] + residue);
         });
-        console.log(xCoords);
         xData.forEach((number, i) => {
           drawCanvas.drawText({
             text: number,
@@ -85,9 +87,68 @@
             y: coordY.y1 + 20,
           });
         });
+        return xCoords;
       }
-      drawCoordsX(xData);
+
       drawCoords();
+
+      const xAxis = drawCoordsX(xData);
+      const yAxis = drawCoordsY(coordY.y2, coordY.y1);
+      //绘制矩形 绘制矩形线 绘制涨跌
+      function chartSeries({ xData, yData, xAxis, yAxis }) {
+        const temp = yData[0];
+        const { position, axis } = yAxis;
+        const yHeight = position[0] - position[position.length - 1];
+        const axisItem = yHeight / axis[axis.length - 1];
+        console.log(axisItem);
+        const rectStart = axisItem * temp[0];
+        const rectEnd = axisItem * temp[1];
+        const rectWidth = 15;
+        const rectHeight = 40;
+        console.log(rectStart, rectEnd);
+        // console.log(axisItem * temp[2]);
+        // drawCanvas.drawFillRect(xAxis[0], rectStart, rectWidth, rectHeight);
+        candlestickCharts({
+          rect: {
+            x: xAxis[0],
+            y: rectStart,
+            width: rectWidth,
+            height: rectEnd,
+          },
+          line: {
+            topLine: {
+              startPoint: {
+                x: xAxis[0],
+                y: axisItem * temp[2] + 5,
+              },
+              endPoint: {
+                x: xAxis[0],
+                y: axisItem * temp[2] + 10,
+              },
+            },
+          },
+        });
+      }
+      function candlestickCharts({ rect, line }) {
+        const { width, height, x, y } = rect;
+        console.log(rect);
+        console.log(line);
+        const {
+          topLine: { startPoint, endPoint },
+        } = line;
+        //绘制矩形
+        drawCanvas.drawFillRect(x, y, width, height, { fillStyle: "green" });
+        //绘制线条
+        drawCanvas.lineTo({
+          x1: startPoint.x,
+          y1: startPoint.y,
+          x2: startPoint.x,
+          y2: endPoint.y,
+        });
+      }
+      // drawCanvas.ctx.fillStyle = "green";
+
+      chartSeries({ xData, yData, xAxis, yAxis });
     </script>
   </body>
 </html>

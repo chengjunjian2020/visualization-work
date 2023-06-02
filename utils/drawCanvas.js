@@ -5,7 +5,6 @@ export class DrawCanvas {
   canvasObj = {}; //canvas一些关键信息例如width height后面需要用到的一些信息
   //   ctxInfo = {};
   constructor(canvasObj, ctxStyle) {
-    console.log(canvasObj);
     const { id } = canvasObj;
     if (!id) {
       throw new Error("请传入canvasid");
@@ -31,12 +30,11 @@ export class DrawCanvas {
     if (typeof info !== "object") {
       return;
     }
-    console.dir(this);
     Object.keys(info).forEach((key) => {
-      console.log(this.ctx);
       this.ctx[key] = info[key];
     });
   };
+
   lineTo({ x1, y1, x2, y2 }, styleInfo) {
     const { ctx } = this;
     this.setCtxAttribute(styleInfo);
@@ -46,6 +44,7 @@ export class DrawCanvas {
     ctx.stroke();
     this.setCtxAttribute();
   }
+  //三次贝塞尔曲线
   bezierCurveTo({ _x, _y, cp1x, cp1y, cp2x, cp2y, x, y }, styleInfo) {
     const { ctx } = this;
     this.setCtxAttribute(styleInfo);
@@ -58,9 +57,16 @@ export class DrawCanvas {
   }
   drawText({ text, x, y }, styleInfo) {
     const { ctx } = this;
-
     this.setCtxAttribute(styleInfo);
     ctx.fillText(text, x, y);
+    this.setCtxAttribute();
+  }
+  drawFillRect(x, y, width, height, styleInfo) {
+    const { ctx } = this;
+    ctx.beginPath();
+    this.setCtxAttribute(styleInfo);
+    ctx.fillRect(x, y, width, height);
+    ctx.closePath();
     this.setCtxAttribute();
   }
   clearCanvas() {
