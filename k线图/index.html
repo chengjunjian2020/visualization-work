@@ -25,11 +25,13 @@
         font: 14,
         fillStyle: "#666",
       };
+      const width = 800;
+      const height = 700;
       const drawCanvas = new DrawCanvas(
         {
           id: "#k-chart",
-          width: 800,
-          height: 700,
+          width,
+          height,
         },
         ctxStyle
       );
@@ -50,32 +52,35 @@
       function drawAxisY() {
         let max = Math.max(...[].concat(...yData));
         let min = Math.min(...[].concat(...yData));
+        {
+          // const stepYaxisDataCount =
+        }
         //计算y轴刻度最大值和最小值范围
         max = Math.floor(max + max / 5);
         min = Math.floor(min - min / 5);
-
         //计算y轴实际高度
         const yHeight = endY - startY;
         //下面是计算y轴数字刻度数据
         // const interval = yHeight / max;
-        const middleHeight = (max - min) / 3;
-        let yAxisNumber = [max, min];
-        for (let i = 2; i < 5; i++) {
+        const middleHeight = max / 5;
+        let yAxisNumber = [];
+        for (let i = 1; i <= 5; i++) {
           yAxisNumber.push(parseInt(middleHeight * i));
         }
         yAxisNumber = yAxisNumber.sort((a, b) => a - b);
         //计算y轴数据位置
         const startyOffet = 10; //顶部数据坐标设置为0被挡住故添加偏移量
-        let yAxisPosition = [endY, startY + startyOffet];
-        const middlePosition = (endY - startY) / 5;
-        for (let i = 2; i < 5; i++) {
-          yAxisPosition.push(endY - middlePosition * i);
+        let yAxisPosition = [];
+        const middlePosition = endY / 5;
+        for (let i = 1; i <= 5; i++) {
+          yAxisPosition.push(
+            (yAxisNumber[i] / yAxisNumber[yAxisNumber.length - 1]) * endY
+          );
         }
         yAxisPosition = yAxisPosition.sort((a, b) => b - a);
         //绘制y轴数字
         const startxOffset = 40; //x原点偏移量
         for (let i in yAxisNumber) {
-          console.log(yAxisPosition);
           drawCanvas.drawText(
             {
               text: yAxisNumber[i],
@@ -94,6 +99,26 @@
         };
       }
       function drawAxisX() {
+        {
+          const everyX = (endX - startX) / xData.length;
+          const endyOffet = 20;
+          for (let i = 0; i < xData.length; i++) {
+            const point = {
+              x: (i + 0.5) * everyX + startX,
+              y: endY + endyOffet,
+            };
+            drawCanvas.drawText(
+              {
+                text: xData[i],
+                ...point,
+              },
+              {
+                font: 14,
+                fillStyle: "#666",
+              }
+            );
+          }
+        }
         const middlePosition = (endY - startY) / 4;
         const endxOffset = 50; //偏移量
         let xAxisPosition = [startX, endX - endxOffset];
@@ -103,19 +128,19 @@
         xAxisPosition = xAxisPosition.sort((a, b) => a - b);
 
         const endyOffet = 20;
-        for (let i in xAxisPosition) {
-          drawCanvas.drawText(
-            {
-              text: xData[i],
-              x: xAxisPosition[i],
-              y: endY + endyOffet,
-            },
-            {
-              font: 14,
-              fillStyle: "#666",
-            }
-          );
-        }
+        // for (let i in xAxisPosition) {
+        //   drawCanvas.drawText(
+        //     {
+        //       text: xData[i],
+        //       x: xAxisPosition[i],
+        //       y: endY + endyOffet,
+        //     },
+        //     {
+        //       font: 14,
+        //       fillStyle: "#666",
+        //     }
+        //   );
+        // }
         return {
           xAxisNumber: xData,
           xAxisPosition,
@@ -132,19 +157,17 @@
       function drawSeries(axisData, yData) {
         const { xAxisNumber, xAxisPosition, yAxisNumber } = axisData;
         const yAxisPosition = axisData.yAxisPosition.reverse();
+        console.log(axisData);
         const temp = yData[0];
         //开始计算
         //-----------------------------------------------------------------
-        const intervalIndex = getAxisIndex(temp[0], yAxisNumber);
-        console.log(intervalIndex);
-        const calcPosition = yAxisPosition[intervalIndex] - yAxisPosition[0];
-        const getPercentHeight =
-          calcPosition / (yAxisNumber[intervalIndex] - temp[intervalIndex - 1]);
-        console.log(getPercentHeight);
+
         const topLine =
           yAxisPosition[yAxisPosition.length - 1] -
-          calcPosition * getPercentHeight;
-
+          (temp[0] / yAxisNumber[yAxisNumber.length - 1]) *
+            yAxisPosition[yAxisPosition.length - 1];
+        console.log(topLine);
+        // const bottom
         drawCanvas.lineTo({
           x1: startX + 50,
           y1: topLine,
