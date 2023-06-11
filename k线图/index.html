@@ -10,77 +10,96 @@
         margin: 0;
         padding: 0;
       }
+      ul li {
+        list-style: none;
+      }
       #k-chart {
         margin-top: 10px;
+      }
+      .tip_alert {
+        opacity: 0.9;
+        background: #f2f4fa;
+        position: absolute;
+        color: #525252;
+        padding: 8px 15px;
+        z-index: 1;
+        top: 120px;
+        display: none;
       }
     </style>
   </head>
   <body>
     <canvas id="k-chart" width="800" height="700"></canvas>
+    <div class="tip_alert" id="tipAlert">
+      <ul>
+        <li>
+          <span class="label">开盘价</span>
+          <span class="price">1</span>
+        </li>
+        <li>
+          <span class="label">收盘价</span>
+          <span class="price">1</span>
+        </li>
+        <li>
+          <span class="label">最大值</span>
+          <span class="price">1</span>
+        </li>
+        <li>
+          <span class="label">最小值</span>
+          <span class="price"></span>
+        </li>
+      </ul>
+    </div>
     <script type="module">
-      //TODO 计算坐标轴和坐标轴刻度悠问题
       import { DrawCanvas } from "../utils/drawCanvas.js";
       import { yData, xData } from "./mock.js";
       const ctxStyle = {
         font: 14,
         fillStyle: "#666",
+        strokeStyle: "#000",
       };
-      const drawCanvas = new DrawCanvas(
-        {
-          id: "#k-chart",
-          width: 800,
-          height: 700,
-        },
-        ctxStyle
-      );
+      const width = 800;
+      const height = 700;
       const startX = 50;
       const endX = 780;
       const startY = 0;
       const endY = 650;
+      let dataMax;
+      let stepSize = 0;
+      const drawCanvas = new DrawCanvas(
+        {
+          id: "#k-chart",
+          width,
+          height,
+        },
+        ctxStyle
+      );
 
+      const yAxisCount = 5;
       //绘制坐标系
       function drawAxis() {
         drawAxisLine();
-        return {
-          ...drawAxisY(),
-          ...drawAxisX(),
-        };
+        drawAxisY();
+        drawAxisX();
       }
       //绘制y轴
       function drawAxisY() {
         let max = Math.max(...[].concat(...yData));
         let min = Math.min(...[].concat(...yData));
-        //计算y轴刻度最大值和最小值范围
+
         max = Math.floor(max + max / 5);
         min = Math.floor(min - min / 5);
 
-        //计算y轴实际高度
-        const yHeight = endY - startY;
-        //下面是计算y轴数字刻度数据
-        // const interval = yHeight / max;
-        const middleHeight = (max - min) / 3;
-        let yAxisNumber = [max, min];
-        for (let i = 2; i < 5; i++) {
-          yAxisNumber.push(parseInt(middleHeight * i));
-        }
-        yAxisNumber = yAxisNumber.sort((a, b) => a - b);
-        //计算y轴数据位置
-        const startyOffet = 10; //顶部数据坐标设置为0被挡住故添加偏移量
-        let yAxisPosition = [endY, startY + startyOffet];
-        const middlePosition = (endY - startY) / 5;
-        for (let i = 2; i < 5; i++) {
-          yAxisPosition.push(endY - middlePosition * i);
-        }
-        yAxisPosition = yAxisPosition.sort((a, b) => b - a);
-        //绘制y轴数字
-        const startxOffset = 40; //x原点偏移量
-        for (let i in yAxisNumber) {
-          console.log(yAxisPosition);
+        dataMax = max;
+        const stepsYaxisDataCount = (max - min) / (yAxisCount - 1);
+        const stepsHeight = endY / (yAxisCount - 1);
+        stepSize = endY / (max - min);
+        for (let i = 0; i < yAxisCount; i++) {
           drawCanvas.drawText(
             {
-              text: yAxisNumber[i],
-              x: startX - startxOffset,
-              y: yAxisPosition[i],
+              text: Number(max - stepsYaxisDataCount * i).toFixed(0),
+              x: startX - 40,
+              y: i === 0 ? stepsHeight * i + 10 : stepsHeight * i - 10,
             },
             {
               font: 14,
@@ -88,27 +107,16 @@
             }
           );
         }
-        return {
-          yAxisNumber,
-          yAxisPosition,
-        };
       }
       function drawAxisX() {
-        const middlePosition = (endY - startY) / 4;
-        const endxOffset = 50; //偏移量
-        let xAxisPosition = [startX, endX - endxOffset];
-        for (let i = 1; i <= 3; i++) {
-          xAxisPosition.push(parseInt(startX + middlePosition * i));
-        }
-        xAxisPosition = xAxisPosition.sort((a, b) => a - b);
-
-        const endyOffet = 20;
-        for (let i in xAxisPosition) {
+        const everyX = (endX - startX) / xData.length;
+        const bottomOffet = 20;
+        for (let i = 0; i < xData.length; i++) {
+          const point = { x: (i + 0.5) * everyX, y: endY + bottomOffet };
           drawCanvas.drawText(
             {
               text: xData[i],
-              x: xAxisPosition[i],
-              y: endY + endyOffet,
+              ...point,
             },
             {
               font: 14,
@@ -116,10 +124,6 @@
             }
           );
         }
-        return {
-          xAxisNumber: xData,
-          xAxisPosition,
-        };
       }
 
       //绘制坐标轴线条
@@ -127,34 +131,128 @@
         drawCanvas.lineTo({ x1: startX, y1: endY, x2: endX, y2: endY });
         drawCanvas.lineTo({ x1: startX, y1: endY, x2: startX, y2: startY });
       }
-      const axisData = drawAxis();
-      drawSeries(axisData, yData);
-      function drawSeries(axisData, yData) {
-        const { xAxisNumber, xAxisPosition, yAxisNumber } = axisData;
-        const yAxisPosition = axisData.yAxisPosition.reverse();
+      
+      function drawKLine() {
+        drawAxis();
+        drawSeries();
+      }
+      function drawSeries() {
         const temp = yData[0];
-        //开始计算
-        //-----------------------------------------------------------------
-        const intervalIndex = getAxisIndex(temp[0], yAxisNumber);
-        console.log(intervalIndex);
-        const calcPosition = yAxisPosition[intervalIndex] - yAxisPosition[0];
-        const getPercentHeight =
-          calcPosition / (yAxisNumber[intervalIndex] - temp[intervalIndex - 1]);
-        console.log(getPercentHeight);
-        const topLine =
-          yAxisPosition[yAxisPosition.length - 1] -
-          calcPosition * getPercentHeight;
+        let everyXWidth = (endX - startX) / xData.length;
+        for (let i = 0; i < yData.length; i++) {
+          const numList = yData[i];
+          const rect = {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0,
+          };
+          rect.y = (dataMax - numList[0]) * stepSize;
+          rect.height = (dataMax - numList[1]) * stepSize;
+          rect.width = 10;
+          rect.x = (i + 0.5) * everyXWidth + 20;
+          let fillStyle = "green";
+          if (numList[1] > numList[0]) {
+            let temp = rect.height;
+            rect.height = rect.y;
+            rect.y = temp;
+            fillStyle = "red";
+          }
+          rect.height = rect.height - rect.y;
+          drawCanvas.drawFillRect(rect, { fillStyle });
+          drawCanvas.lineTo(
+            {
+              x1: rect.x + rect.width / 2,
+              y1: (dataMax - numList[3]) * stepSize,
+              x2: rect.x + rect.width / 2,
+              y2: rect.y,
+            },
+            { strokeStyle: fillStyle }
+          );
+          const minYAxis = Math.abs(
+            rect.y + rect.height - (dataMax - numList[2]) * stepSize
+          );
 
-        drawCanvas.lineTo({
-          x1: startX + 50,
-          y1: topLine,
-          x2: startX + 50,
-          y2: topLine - 20,
-        });
+          drawCanvas.lineTo(
+            {
+              x1: rect.x + rect.width / 2,
+              y1: rect.y + rect.height,
+              x2: rect.x + rect.width / 2,
+              y2: rect.y + rect.height + minYAxis,
+            },
+            { strokeStyle: fillStyle }
+          );
+        }
       }
       function getAxisIndex(dataNumber, axisNumber) {
         return axisNumber.findIndex((number) => number > dataNumber);
       }
+      drawCanvas.$el.onmousemove = (e) => {
+        e.preventDefault();
+        drawCanvas.clearCanvas()
+        drawKLine();
+        const { screenX } = e;
+        const tipAlert = document.getElementById("tipAlert");
+        if (startX >= screenX) {
+          tipAlert.style.display = "none";
+          return;
+        }
+        const x = screenX - startX;
+        const stepsXLength = endX / xData.length;
+        const everyX = (endX - startX) / xData.length;
+        const index = Math.ceil(x / stepsXLength) - 1;
+        tipAlert.style.left = (index + 0.5) * everyX + "px";
+        tipAlert.style.display = "block";
+        tipAlert.innerHTML = `<ul>
+        <li>
+          <span class="label">开盘价</span>
+          <span class="price">${yData[index][0]}</span>
+        </li>
+        <li>
+          <span class="label">收盘价</span>
+          <span class="price">${yData[index][1]}</span>
+        </li>
+        <li>
+          <span class="label">最大值</span>
+          <span class="price">${yData[index][2]}</span>
+        </li>
+        <li>
+          <span class="label">最小值</span>
+          <span class="price">${yData[index][3]}</span>
+        </li>
+      </ul>`;
+
+        //处理指示线
+        drawCanvas.ctx.setLineDash([5, 5]);
+        const xPoint = (index + 0.5) * everyX + 20 + 10 / 2;
+        console.log({
+            x1: xPoint,
+            y1: startY,
+            x2: xPoint,
+            y2: endY,
+          },)
+        drawCanvas.lineTo(
+          {
+            x1: xPoint,
+            y1: startY,
+            x2: xPoint,
+            y2: endY,
+          },
+          {
+            strokeStyle: "#ccc",
+          }
+        );
+        drawCanvas.drawText(
+          { text: xData[index], x: xPoint - 20, y: endY - 50 },
+          {
+            fillStyle: "#666",
+          }
+        );
+      };
+      drawCanvas.$el.onmouseout = () => {
+        tipAlert.style.display = "none";
+      };
+      drawKLine();
     </script>
   </body>
 </html>

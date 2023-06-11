@@ -19,6 +19,7 @@ export class DrawCanvas {
     const { id, width = 100, height = 100 } = canvasObj;
     $(id).width = width;
     $(id).height = height;
+    this.$el = $(id)
     return canvasObj;
   }
   createCanvasContext = (id) => {
@@ -43,6 +44,7 @@ export class DrawCanvas {
     ctx.lineTo(x2, y2);
     ctx.stroke();
     this.setCtxAttribute();
+    ctx.setLineDash([0, 0]);
   }
   //三次贝塞尔曲线
   bezierCurveTo({ _x, _y, cp1x, cp1y, cp2x, cp2y, x, y }, styleInfo) {
@@ -61,7 +63,7 @@ export class DrawCanvas {
     ctx.fillText(text, x, y);
     this.setCtxAttribute();
   }
-  drawFillRect(x, y, width, height, styleInfo) {
+  drawFillRect({x, y, width, height}, styleInfo) {
     const { ctx } = this;
     ctx.beginPath();
     this.setCtxAttribute(styleInfo);
