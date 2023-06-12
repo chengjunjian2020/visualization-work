@@ -17,9 +17,12 @@ export class DrawCanvas {
   }
   initCanvasObj(canvasObj) {
     const { id, width = 100, height = 100 } = canvasObj;
+    console.log($(id), id);
     $(id).width = width;
     $(id).height = height;
-    this.$el = $(id)
+    $(id).style.width = width + "px";
+    $(id).style.height = height + "px";
+    this.$el = $(id);
     return canvasObj;
   }
   createCanvasContext = (id) => {
@@ -34,6 +37,7 @@ export class DrawCanvas {
     Object.keys(info).forEach((key) => {
       this.ctx[key] = info[key];
     });
+    return info;
   };
 
   lineTo({ x1, y1, x2, y2 }, styleInfo) {
@@ -63,7 +67,7 @@ export class DrawCanvas {
     ctx.fillText(text, x, y);
     this.setCtxAttribute();
   }
-  drawFillRect({x, y, width, height}, styleInfo) {
+  drawFillRect({ x, y, width, height }, styleInfo) {
     const { ctx } = this;
     ctx.beginPath();
     this.setCtxAttribute(styleInfo);

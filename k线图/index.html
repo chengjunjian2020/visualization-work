@@ -14,7 +14,8 @@
         list-style: none;
       }
       #k-chart {
-        margin-top: 10px;
+        width: 800px;
+        height: 700px;
       }
       .tip_alert {
         opacity: 0.9;
@@ -29,7 +30,9 @@
     </style>
   </head>
   <body>
-    <canvas id="k-chart" width="800" height="700"></canvas>
+    <div style="margin: 10px" id="kLine">
+      <!-- <canvas id="k-chart" width="800" height="700"></canvas> -->
+    </div>
     <div class="tip_alert" id="tipAlert">
       <ul>
         <li>
@@ -51,6 +54,12 @@
       </ul>
     </div>
     <script type="module">
+      import KLineChart from "./index.js";
+      import { yData, xData } from "./mock.js";
+      console.log("--");
+      new KLineChart(document.getElementById("kLine"), { xData, yData });
+    </script>
+    <!-- <script type="module">
       import { DrawCanvas } from "../utils/drawCanvas.js";
       import { yData, xData } from "./mock.js";
       const ctxStyle = {
@@ -65,6 +74,7 @@
       const startY = 0;
       const endY = 650;
       let dataMax;
+      let dataMin;
       let stepSize = 0;
       const drawCanvas = new DrawCanvas(
         {
@@ -91,6 +101,7 @@
         min = Math.floor(min - min / 5);
 
         dataMax = max;
+        dataMin = min;
         const stepsYaxisDataCount = (max - min) / (yAxisCount - 1);
         const stepsHeight = endY / (yAxisCount - 1);
         stepSize = endY / (max - min);
@@ -100,6 +111,7 @@
               text: Number(max - stepsYaxisDataCount * i).toFixed(0),
               x: startX - 40,
               y: i === 0 ? stepsHeight * i + 10 : stepsHeight * i - 10,
+              // y:(endY-startY)/dataMax* Number(max - stepsYaxisDataCount * i).toFixed(0)
             },
             {
               font: 14,
@@ -131,7 +143,7 @@
         drawCanvas.lineTo({ x1: startX, y1: endY, x2: endX, y2: endY });
         drawCanvas.lineTo({ x1: startX, y1: endY, x2: startX, y2: startY });
       }
-      
+
       function drawKLine() {
         drawAxis();
         drawSeries();
@@ -188,12 +200,13 @@
         return axisNumber.findIndex((number) => number > dataNumber);
       }
       drawCanvas.$el.onmousemove = (e) => {
+        console.log(e);
         e.preventDefault();
-        drawCanvas.clearCanvas()
+        drawCanvas.clearCanvas();
         drawKLine();
-        const { screenX } = e;
+        const { screenX, y } = e;
         const tipAlert = document.getElementById("tipAlert");
-        if (startX >= screenX) {
+        if (startX >= screenX || y > endY) {
           tipAlert.style.display = "none";
           return;
         }
@@ -213,11 +226,11 @@
           <span class="price">${yData[index][1]}</span>
         </li>
         <li>
-          <span class="label">最大值</span>
+          <span class="label">最小值</span>
           <span class="price">${yData[index][2]}</span>
         </li>
         <li>
-          <span class="label">最小值</span>
+          <span class="label">最大值</span>
           <span class="price">${yData[index][3]}</span>
         </li>
       </ul>`;
@@ -225,12 +238,7 @@
         //处理指示线
         drawCanvas.ctx.setLineDash([5, 5]);
         const xPoint = (index + 0.5) * everyX + 20 + 10 / 2;
-        console.log({
-            x1: xPoint,
-            y1: startY,
-            x2: xPoint,
-            y2: endY,
-          },)
+
         drawCanvas.lineTo(
           {
             x1: xPoint,
@@ -248,11 +256,34 @@
             fillStyle: "#666",
           }
         );
+        drawCanvas.ctx.setLineDash([5, 5]);
+        drawCanvas.lineTo(
+          {
+            x1: startX,
+            y1: y,
+            x2: endX,
+            y2: y,
+          },
+          {
+            strokeStyle: "#ccc",
+          }
+        );
+        const yNumber = dataMax - Math.round(((dataMax - dataMin) / endY) * y);
+
+        drawCanvas.drawText(
+          { text: yNumber, x: startX, y: y },
+          {
+            fillStyle: "#666",
+          }
+        );
       };
       drawCanvas.$el.onmouseout = () => {
         tipAlert.style.display = "none";
+        console.log("--");
+        drawCanvas.clearCanvas();
+        drawKLine();
       };
       drawKLine();
-    </script>
+    </script> -->
   </body>
 </html>
