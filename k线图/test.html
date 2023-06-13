@@ -261,7 +261,7 @@
           }
         );
         const yNumber = dataMax - Math.round(((dataMax - dataMin) / endY) * y);
-
+        console.log(`endY=${endY};y=${y}`)
         drawCanvas.drawText(
           { text: yNumber, x: startX, y: y },
           {

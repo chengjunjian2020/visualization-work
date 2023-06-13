@@ -84,13 +84,75 @@ export default class AxisChart extends Chart {
     }
   }
   axisPointer() {
-    console.log(this);
-    const { drawCanvas, draw } = this;
-    this.el.onmousemove = function () {
+    const {
+      drawCanvas,
+      left,
+      width,
+      height,
+      top,
+      bottom,
+      right,
+      xAxis,
+      dataMax,
+      dataMin,
+    } = this;
+    if(this.el.onmousemove){
+      return;
+    }
+    this.el.onmousemove = (e) => {
       e.preventDefault();
       drawCanvas.clearCanvas();
-      draw();
-      //   drawKLine();
+      this.draw();
+      const { screenX, y } = e;
+
+      const endY = height - top - bottom;
+      const endX = width - left;
+      if (left >= screenX || y > endY || top>y) {
+        // tipAlert.style.display = "none";
+        return;
+      }
+      const x = screenX - left;
+      const stepsXLength = endX / xAxis.length;
+      const everyX = (width - left) / xAxis.length;
+      const index = Math.ceil(x / stepsXLength) - 1;
+      drawCanvas.ctx.setLineDash([5, 5]);
+      const xPoint = (index + 0.5) * everyX + 10 / 2;
+      drawCanvas.lineTo(
+        {
+          x1: xPoint,
+          y1: top,
+          x2: xPoint,
+          y2: endY,
+        },
+        {
+          strokeStyle: "#ccc",
+        }
+      );
+      drawCanvas.drawText(
+        { text: xAxis[index], x: xPoint - 20, y: endY - 50 },
+        {
+          fillStyle: "#666",
+        }
+      );
+      drawCanvas.ctx.setLineDash([5, 5]);
+      drawCanvas.lineTo(
+        {
+          x1: left,
+          y1: y,
+          x2: endX,
+          y2: y,
+        },
+        {
+          strokeStyle: "#ccc",
+        }
+      );
+      const yNumber = dataMax - Math.round(((dataMax - dataMin) / endY) * (y-top));
+      drawCanvas.drawText(
+        { text: yNumber, x: left, y: y },
+        {
+          fillStyle: "#ccc",
+        }
+      );
     };
   }
 }

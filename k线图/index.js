@@ -6,6 +6,7 @@ class KLineChart extends AxisChart {
     this.draw();
   }
   draw() {
+    console.log(this.drawAxisLine)
     this.drawAxisLine();
     this.drawAxisX();
     this.drawAxisY();
