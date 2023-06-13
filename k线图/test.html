@@ -31,7 +31,7 @@
   </head>
   <body>
     <div style="margin: 10px; width: 800px; height: 700px" id="kLine">
-      <!-- <canvas id="k-chart" width="800" height="700"></canvas> -->
+      <canvas id="k-chart" width="800" height="700"></canvas>
     </div>
     <div class="tip_alert" id="tipAlert">
       <ul>
@@ -53,12 +53,8 @@
         </li>
       </ul>
     </div>
+
     <script type="module">
-      import KLineChart from "./index.js";
-      import { yData, xData } from "./mock.js";
-      new KLineChart(document.getElementById("kLine"), { xData, yData });
-    </script>
-    <!-- <script type="module">
       import { DrawCanvas } from "../utils/drawCanvas.js";
       import { yData, xData } from "./mock.js";
       const ctxStyle = {
@@ -149,6 +145,7 @@
       }
       function drawSeries() {
         let everyXWidth = (endX - startX) / xData.length;
+        console.log(stepSize);
         for (let i = 0; i < yData.length; i++) {
           const numList = yData[i];
           const rect = {
@@ -161,6 +158,7 @@
           rect.height = (dataMax - numList[1]) * stepSize;
           rect.width = 10;
           rect.x = (i + 0.5) * everyXWidth + 20;
+          console.log(everyXWidth);
           let fillStyle = "green";
           if (numList[1] > numList[0]) {
             let temp = rect.height;
@@ -195,7 +193,6 @@
         }
       }
       drawCanvas.$el.onmousemove = (e) => {
-        console.log(e);
         e.preventDefault();
         drawCanvas.clearCanvas();
         drawKLine();
@@ -279,6 +276,6 @@
         drawKLine();
       };
       drawKLine();
-    </script> -->
+    </script>
   </body>
 </html>

@@ -7,23 +7,25 @@ const defaultCtxStyle = {
 };
 
 export default class Chart {
+  drawCanvas;
+  ctx;
   constructor(el, options) {
-    console.log();
     this.initData(el);
     this.initCanvas(el, options);
   }
-  initData(el) {
+  initData = (el) => {
     this.width = el.clientWidth;
     this.height = el.clientHeight;
-  }
-  initCanvas(el, options) {
+  };
+  initCanvas = (el, options) => {
     const { ctxStyle } = options;
     const { width, height } = this;
     const canvas = document.createElement("canvas");
     const id = `k-chart-${new Date().getTime()}`;
     canvas.id = id;
+    this.el = canvas;
     el.appendChild(canvas);
-    this.instance = new DrawCanvas(
+    this.drawCanvas = new DrawCanvas(
       {
         id: `#${id}`,
         width,
@@ -31,5 +33,6 @@ export default class Chart {
       },
       { ...defaultCtxStyle, ...ctxStyle }
     );
-  }
+    this.ctx = this.drawCanvas.ctx;
+  };
 }
