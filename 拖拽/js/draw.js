@@ -130,8 +130,6 @@ export class DrawItem {
       return;
     }
     const { right, bottom } = mouse.boundary;
-    console.log(right);
-    console.log(event.x - mouse.startX);
     const moveX = Math.max(Math.min(event.x - mouse.startX, right), 0);
     const moveY = Math.max(Math.min(event.y - mouse.endY, bottom), 0);
     mouse.moveX = moveX;

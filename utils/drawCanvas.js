@@ -17,7 +17,6 @@ export class DrawCanvas {
   }
   initCanvasObj(canvasObj) {
     const { id, width = 100, height = 100 } = canvasObj;
-    console.log($(id), id);
     $(id).width = width;
     $(id).height = height;
     $(id).style.width = width + "px";

@@ -6,13 +6,17 @@ class KLineChart extends AxisChart {
     this.draw();
   }
   draw() {
-    console.log(this.drawAxisLine)
     this.drawAxisLine();
     this.drawAxisX();
     this.drawAxisY();
     this.drawSeries();
-
-    this.axisPointer(); //指示线
+    if (this._axisPointer) {
+      this._axisPointer();
+    } else {
+      //指示线
+      this._axisPointer = this.axisPointer();
+      this._axisPointer();
+    }
   }
   drawSeries() {
     const { yAxis, dataMax, stepSize, drawCanvas } = this;
