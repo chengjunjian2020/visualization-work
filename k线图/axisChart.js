@@ -1,9 +1,9 @@
 import Chart from "./chart.js";
+import { $ } from "../utils/index.js";
 export default class AxisChart extends Chart {
   constructor(el, options) {
     super(el, options);
     this.initSelfData(options);
-    // this.draw();
   }
   initSelfData = (options) => {
     this.top = 20;
@@ -28,12 +28,7 @@ export default class AxisChart extends Chart {
     this.dataMin = min;
     this.stepSize = (height - top - bottom) / (max - min);
   };
-  //   draw = () => {
-  //     this.drawAxisLine();
-  //     this.drawAxisX();
-  //     this.drawAxisY();
-  //     this.axisPointer(); //指示线
-  //   };
+
   drawAxisLine = () => {
     const { left, height, width, right, top, bottom, drawCanvas } = this;
     const y = height - top - bottom;
@@ -83,18 +78,96 @@ export default class AxisChart extends Chart {
       });
     }
   }
-  axisPointer() {
-    let listenerAxisPointer = true;
+  listenerEvent() {
+    let listenerEvent = true;
     return () => {
-      if (listenerAxisPointer) {
-        listenerAxisPointer = false;
-        this.el.addEventListener("mousemove", (e) =>
-          this.mouseMoveAxisPointer(e)
-        );
+      if (listenerEvent) {
+        listenerEvent = false;
+        this.el.addEventListener("mousemove", (e) => {
+          const { left, width, height, top, bottom, xAxis, yAxis, right } =
+            this;
+          const endY = height - top - bottom;
+          const x = e.screenX - left;
+          const endX = width - left;
+
+          const stepsXLength = endX / xAxis.length;
+          const everyX = (width - left) / xAxis.length;
+          const index = Math.ceil(x / stepsXLength) - 1;
+          const xPoint = (index + 0.5) * everyX + 10 / 2;
+          if (index > xAxis.length - 1) {
+            return;
+          }
+          this.mouseMoveAxisPointer(e, {
+            endY,
+            endX,
+            x,
+            stepsXLength,
+            everyX,
+            index,
+            xPoint,
+          });
+          this.mouseMoveTooltip(e, {
+            endY,
+            endX,
+            x,
+            stepsXLength,
+            everyX,
+            index,
+            xPoint,
+          });
+        });
+        this.el.addEventListener("mouseout", (e) => {
+          this.mouseOutAxisPointer(e);
+          this.mouseOutTooltip(e);
+        });
       }
     };
   }
-  mouseMoveAxisPointer(e) {
+  mouseOutTooltip(e) {
+    const tipAlert = $("#tipAlert");
+    tipAlert.style.display = "none";
+    e.preventDefault();
+  }
+  mouseOutAxisPointer(e) {
+    e.preventDefault();
+    const { drawCanvas } = this;
+    drawCanvas.clearCanvas();
+    this.draw();
+  }
+  mouseMoveTooltip(e, { endY, endX, x, stepsXLength, everyX, index, xPoint }) {
+    const { screenX, y } = e;
+    const { left, width, height, top, bottom, xAxis, yAxis } = this;
+    const tipAlert = $("#tipAlert");
+
+    if (left >= screenX || y > endY || top > y) {
+      tipAlert.style.display = "none";
+      return;
+    }
+    tipAlert.style.left = (index + 0.5) * everyX + "px";
+    tipAlert.style.display = "block";
+    tipAlert.innerHTML = `<ul>
+    <li>
+      <span class="label">开盘价</span>
+      <span class="price">${yAxis[index][0]}</span>
+    </li>
+    <li>
+      <span class="label">收盘价</span>
+      <span class="price">${yAxis[index][1]}</span>
+    </li>
+    <li>
+      <span class="label">最小值</span>
+      <span class="price">${yAxis[index][2]}</span>
+    </li>
+    <li>
+      <span class="label">最大值</span>
+      <span class="price">${yAxis[index][3]}</span>
+    </li>
+  </ul>`;
+  }
+  mouseMoveAxisPointer(
+    e,
+    { endY, endX, x, stepsXLength, everyX, index, xPoint }
+  ) {
     const {
       drawCanvas,
       left,
@@ -106,25 +179,16 @@ export default class AxisChart extends Chart {
       dataMax,
       dataMin,
     } = this;
-    console.log(this);
     e.preventDefault();
     drawCanvas.clearCanvas();
     this.draw();
 
     const { screenX, y } = e;
 
-    const endY = height - top - bottom;
-    const endX = width - left;
     if (left >= screenX || y > endY || top > y) {
-      // tipAlert.style.display = "none";
       return;
     }
-    const x = screenX - left;
-    const stepsXLength = endX / xAxis.length;
-    const everyX = (width - left) / xAxis.length;
-    const index = Math.ceil(x / stepsXLength) - 1;
     drawCanvas.ctx.setLineDash([5, 5]);
-    const xPoint = (index + 0.5) * everyX + 10 / 2;
     drawCanvas.lineTo(
       {
         x1: xPoint,
@@ -154,7 +218,9 @@ export default class AxisChart extends Chart {
         strokeStyle: "#ccc",
       }
     );
-    const yNumber = dataMax - Math.round(((dataMax - dataMin) / endY) * y);
+    const yNumber =
+      dataMax -
+      Math.round(((dataMax - dataMin) / endY) * (top * 2 >= y ? y - 20 : y));
     drawCanvas.drawText(
       { text: yNumber, x: left, y: y },
       {

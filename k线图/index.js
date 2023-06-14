@@ -10,12 +10,12 @@ class KLineChart extends AxisChart {
     this.drawAxisX();
     this.drawAxisY();
     this.drawSeries();
-    if (this._axisPointer) {
-      this._axisPointer();
+    if (this._listenerEvent) {
+      this._listenerEvent();
     } else {
       //指示线
-      this._axisPointer = this.axisPointer();
-      this._axisPointer();
+      this._listenerEvent = this.listenerEvent();
+      this._listenerEvent();
     }
   }
   drawSeries() {
@@ -66,6 +66,8 @@ class KLineChart extends AxisChart {
     rect.height = rect.height - rect.y;
     return { rect, color: fillStyle };
   }
+  
+ 
 }
 
 export default KLineChart;
