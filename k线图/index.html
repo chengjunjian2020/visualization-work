@@ -13,27 +13,29 @@
       ul li {
         list-style: none;
       }
-      #k-chart {
+      #kLine {
         width: 800px;
         height: 700px;
+        margin: 230px;
       }
-      .tip_alert {
-        opacity: 0.9;
+      .k-line-tip-alert {
+        /* opacity: 0.9;
         background: #f2f4fa;
         position: absolute;
         color: #525252;
         padding: 8px 15px;
         z-index: 1;
         top: 120px;
-        display: none;
+        display: none; */
       }
     </style>
   </head>
   <body>
-    <div style="margin: 10px; width: 800px; height: 700px" id="kLine">
+    <div id="kLine">
+      <div></div>
       <!-- <canvas id="k-chart" width="800" height="700"></canvas> -->
     </div>
-    <div class="tip_alert" id="tipAlert">
+    <!-- <div class="tip_alert" id="tipAlert">
       <ul>
         <li>
           <span class="label">开盘价</span>
@@ -52,7 +54,7 @@
           <span class="price"></span>
         </li>
       </ul>
-    </div>
+    </div> -->
     <script type="module">
       import KLineChart from "./index.js";
       import { yData, xData } from "./mock.js";

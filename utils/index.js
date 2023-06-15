@@ -21,3 +21,12 @@ export const createCanvasContext = (id) => {
 export const $ = (id) => {
   return document.querySelector(id);
 };
+
+export const setStyleList = (el, styleList) => {
+  if (styleList.constructor !== Object) {
+    return;
+  }
+  Object.keys(styleList).forEach((key) => {
+    el.style[key] = styleList[key];
+  });
+};

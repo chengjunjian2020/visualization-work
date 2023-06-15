@@ -3,7 +3,12 @@ const rectColor = ["green", "red"];
 class KLineChart extends AxisChart {
   constructor(el, options) {
     super(el, options);
+    this.initKLine(el);
     this.draw();
+  }
+  initKLine(el) {
+    this.container = el;
+    el.style.position = "relative";
   }
   draw() {
     this.drawAxisLine();

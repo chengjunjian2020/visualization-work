@@ -1,9 +1,30 @@
 import Chart from "./chart.js";
-import { $ } from "../utils/index.js";
+import { setStyleList } from "../utils/index.js";
+const tooltipAlert = "tooltipalert";
 export default class AxisChart extends Chart {
   constructor(el, options) {
     super(el, options);
     this.initSelfData(options);
+    this.initTooltip(el);
+  }
+  initTooltip(el) {
+    const tooltip = document.createElement("div");
+    tooltip.setAttribute("class", "k-line-tip-alert");
+    tooltip.setAttribute(tooltipAlert, 1);
+    this.tootip = tooltip;
+    el.append(tooltip);
+
+    setStyleList(tooltip, {
+      opacity: 0.9,
+      background: "#f2f4fa",
+      position: "absolute",
+      color: "#525252",
+      padding: "8px 15px",
+      "z-index": 1,
+      top: "120px",
+      "min-width": "116px",
+      cursor: "pointer",
+    });
   }
   initSelfData = (options) => {
     this.top = 20;
@@ -124,20 +145,30 @@ export default class AxisChart extends Chart {
     };
   }
   mouseOutTooltip(e) {
-    const tipAlert = $("#tipAlert");
-    tipAlert.style.display = "none";
+    this.tootip.style.display = "none";
     e.preventDefault();
   }
   mouseOutAxisPointer(e) {
     e.preventDefault();
+    // while (e.relatedTarget) {
+    //   if(){}
+    // }
     const { drawCanvas } = this;
     drawCanvas.clearCanvas();
     this.draw();
   }
   mouseMoveTooltip(e, { endY, everyX, index }) {
     const { offsetX, offsetY: y } = e;
-    const { left, width, height, top, bottom, xAxis, yAxis } = this;
-    const tipAlert = $("#tipAlert");
+    const {
+      left,
+      width,
+      height,
+      top,
+      bottom,
+      xAxis,
+      yAxis,
+      tootip: tipAlert,
+    } = this;
 
     if (left >= offsetX || y > endY || top > y) {
       tipAlert.style.display = "none";
