@@ -105,7 +105,7 @@
         const stepsHeight = endY / (yAxisCount - 1);
         stepSize = endY / (max - min);
         for (let i = 0; i < yAxisCount; i++) {
-          drawCanvas.drawText(
+          drawCanvas.fillText(
             {
               text: Number(max - stepsYaxisDataCount * i).toFixed(0),
               x: startX - 40,
@@ -124,7 +124,7 @@
         const bottomOffet = 20;
         for (let i = 0; i < xData.length; i++) {
           const point = { x: (i + 0.5) * everyX, y: endY + bottomOffet };
-          drawCanvas.drawText(
+          drawCanvas.fillText(
             {
               text: xData[i],
               ...point,
@@ -169,7 +169,7 @@
             fillStyle = "red";
           }
           rect.height = rect.height - rect.y;
-          drawCanvas.drawFillRect(rect, { fillStyle });
+          drawCanvas.fillRect(rect, { fillStyle });
           drawCanvas.lineTo(
             {
               x1: rect.x + rect.width / 2,
@@ -245,7 +245,7 @@
             strokeStyle: "#ccc",
           }
         );
-        drawCanvas.drawText(
+        drawCanvas.fillText(
           { text: xData[index], x: xPoint - 20, y: endY - 50 },
           {
             fillStyle: "#666",
@@ -265,7 +265,7 @@
         );
         const yNumber = dataMax - Math.round(((dataMax - dataMin) / endY) * y);
 
-        drawCanvas.drawText(
+        drawCanvas.fillText(
           { text: yNumber, x: startX, y: y },
           {
             fillStyle: "#666",
