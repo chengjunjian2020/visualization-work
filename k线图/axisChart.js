@@ -45,7 +45,7 @@ export default class AxisChart extends Chart {
         x: stepsX * i + left,
         y: height - xAxisTextOffset,
       };
-      drawCanvas.drawText(
+      drawCanvas.fillText(
         {
           text: xAxis[i],
           ...point,
@@ -71,7 +71,7 @@ export default class AxisChart extends Chart {
     const stepsYaxisDataCount = (dataMax - dataMin) / (yAxisCount - 1);
     const stepsHeight = (height - top - bottom) / (yAxisCount - 1);
     for (let i = 0; i < yAxisCount; i++) {
-      drawCanvas.drawText({
+      drawCanvas.fillText({
         text: Number(dataMax - stepsYaxisDataCount * i).toFixed(0),
         x: left - 40,
         y: i === 0 ? stepsHeight * i + 30 : stepsHeight * i,
@@ -200,7 +200,7 @@ export default class AxisChart extends Chart {
         strokeStyle: "#ccc",
       }
     );
-    drawCanvas.drawText(
+    drawCanvas.fillText(
       { text: xAxis[index], x: xPoint - 20, y: endY - 50 },
       {
         fillStyle: "#666",
@@ -221,7 +221,7 @@ export default class AxisChart extends Chart {
     const yNumber =
       dataMax -
       Math.round(((dataMax - dataMin) / endY) * (top * 2 >= y ? y - 20 : y));
-    drawCanvas.drawText(
+    drawCanvas.fillText(
       { text: yNumber, x: left, y: y },
       {
         fillStyle: "#666",

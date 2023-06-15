@@ -60,13 +60,13 @@ export class DrawCanvas {
     ctx.stroke();
     this.setCtxAttribute();
   }
-  drawText({ text, x, y }, styleInfo) {
+  fillText({ text, x, y }, styleInfo) {
     const { ctx } = this;
     this.setCtxAttribute(styleInfo);
     ctx.fillText(text, x, y);
     this.setCtxAttribute();
   }
-  drawFillRect({ x, y, width, height }, styleInfo) {
+  fillRect({ x, y, width, height }, styleInfo) {
     const { ctx } = this;
     ctx.beginPath();
     this.setCtxAttribute(styleInfo);

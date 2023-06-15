@@ -23,7 +23,7 @@ class KLineChart extends AxisChart {
     for (let i = 0; i < yAxis.length; i++) {
       const numList = yAxis[i];
       const { rect, color } = this.gerernateRect(numList, i);
-      drawCanvas.drawFillRect(rect, { fillStyle: color });
+      drawCanvas.fillRect(rect, { fillStyle: color });
       drawCanvas.lineTo(
         {
           x1: rect.x + rect.width / 2,
@@ -66,8 +66,6 @@ class KLineChart extends AxisChart {
     rect.height = rect.height - rect.y;
     return { rect, color: fillStyle };
   }
-  
- 
 }
 
 export default KLineChart;
