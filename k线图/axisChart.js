@@ -87,7 +87,7 @@ export default class AxisChart extends Chart {
           const { left, width, height, top, bottom, xAxis, yAxis, right } =
             this;
           const endY = height - top - bottom;
-          const x = e.screenX - left;
+          const x = e.offsetX - left;
           const endX = width - left;
 
           const stepsXLength = endX / xAxis.length;
@@ -134,12 +134,12 @@ export default class AxisChart extends Chart {
     drawCanvas.clearCanvas();
     this.draw();
   }
-  mouseMoveTooltip(e, { endY, endX, x, stepsXLength, everyX, index, xPoint }) {
-    const { screenX, y } = e;
+  mouseMoveTooltip(e, { endY, everyX, index }) {
+    const { offsetX, offsetY: y } = e;
     const { left, width, height, top, bottom, xAxis, yAxis } = this;
     const tipAlert = $("#tipAlert");
 
-    if (left >= screenX || y > endY || top > y) {
+    if (left >= offsetX || y > endY || top > y) {
       tipAlert.style.display = "none";
       return;
     }
@@ -183,12 +183,13 @@ export default class AxisChart extends Chart {
     drawCanvas.clearCanvas();
     this.draw();
 
-    const { screenX, y } = e;
+    const { offsetX, offsetY: y } = e;
 
-    if (left >= screenX || y > endY || top > y) {
+    if (left >= offsetX || y > endY || top > y) {
       return;
     }
     drawCanvas.ctx.setLineDash([5, 5]);
+
     drawCanvas.lineTo(
       {
         x1: xPoint,
