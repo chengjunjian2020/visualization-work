@@ -13,8 +13,8 @@
       ul li {
         list-style: none;
       }
-      #kLine {
-        width: 800px;
+      .kLine {
+        width: 700px;
         height: 700px;
         margin: 230px;
       }
@@ -31,9 +31,11 @@
     </style>
   </head>
   <body>
-    <div id="kLine">
+    <div class="kLine" id="kLine">
       <div></div>
-      <!-- <canvas id="k-chart" width="800" height="700"></canvas> -->
+    </div>
+    <div id="kLine2" class="kLine" style="width: 800px;">
+      <div></div>
     </div>
     <!-- <div class="tip_alert" id="tipAlert">
       <ul>
@@ -57,8 +59,12 @@
     </div> -->
     <script type="module">
       import KLineChart from "./index.js";
-      import { yData, xData } from "./mock.js";
-      new KLineChart(document.getElementById("kLine"), { xData, yData });
+      import { lineData1,lineData2 } from "./mock.js";
+      const count =2;
+      const stepCount = Math.floor(lineData1.length/count);
+      
+      new KLineChart(document.getElementById("kLine"), { data:lineData2.slice(0,5),width:800 });
+      // new KLineChart(document.getElementById("kLine2"), { data:lineData2,width:1000 });
     </script>
     <!-- <script type="module">
       import { DrawCanvas } from "../utils/drawCanvas.js";

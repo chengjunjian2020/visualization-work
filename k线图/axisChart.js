@@ -31,12 +31,15 @@ export default class AxisChart extends Chart {
     this.left = 50;
     this.right = 50;
     this.bottom = 20;
-    const { xData, yData } = options;
+    const { data, xAxisCount = 7, yAxisCount = 7 } = options;
     const { height, top, bottom } = this;
+
+    const xData = data.map((dataList) => dataList[0]);
+    const yData = data.map((dataList) => dataList.slice(1));
     this.xAxis = xData;
     this.yAxis = yData;
-
-    this.yAxisCount = 5; //y轴展示几个
+    this.xAxisCount = xAxisCount > xData.length ? xData.length : xAxisCount;
+    this.yAxisCount = yAxisCount > yData.length ? yData.length : yAxisCount; //y轴展示几个
 
     this.xAxisTextOffset = 20; //x轴文字偏移量
 
@@ -58,24 +61,40 @@ export default class AxisChart extends Chart {
     drawCanvas.lineTo({ x1: left, y1: top, x2: left, y2: y });
   };
   drawAxisX = () => {
-    const { xAxisTextOffset, xAxis, height, width, left, right, drawCanvas } =
-      this;
+    const {
+      xAxisTextOffset,
+      xAxis,
+      height,
+      xAxisCount,
+      width,
+      left,
+      right,
+      drawCanvas,
+    } = this;
     const stepsX = (width - right) / xAxis.length;
-    for (let i in xAxis) {
+    // const stepsXLength = Math.ceil(xAxis.length / xAxisCount);
+    let steps = 0;
+    for (let i = 0; i < xAxis.length; i++) {
+      steps++;
+      // if(i%stepsXLength===0 || (i+1===xAxis.length &&steps< xAxisCount)){
       const point = {
         x: stepsX * i + left,
         y: height - xAxisTextOffset,
       };
-      drawCanvas.fillText(
-        {
-          text: xAxis[i],
-          ...point,
-        },
-        {
-          font: 14,
-          fillStyle: "#666",
-        }
-      );
+      // if(i%3===0){
+        drawCanvas.fillText(
+          {
+            text: xAxis[i],
+            ...point,
+          },
+          {
+            font: 14,
+            fillStyle: "red",
+          }
+        );
+      // }
+     
+      // }
     }
   };
   drawAxisY() {
@@ -112,7 +131,7 @@ export default class AxisChart extends Chart {
           const endX = width - left;
 
           const stepsXLength = endX / xAxis.length;
-          const everyX = (width - left) / xAxis.length;
+          const everyX = (width - right) / xAxis.length;
           const index = Math.ceil(x / stepsXLength) - 1;
           const xPoint = (index + 0.5) * everyX + 10 / 2;
           if (index > xAxis.length - 1) {

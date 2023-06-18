@@ -23,8 +23,13 @@ class KLineChart extends AxisChart {
       this._listenerEvent();
     }
   }
+  drawLines(){
+    // const {yAxis} = this;
+    // for(){}
+  }
   drawSeries() {
     const { yAxis, dataMax, stepSize, drawCanvas } = this;
+    const lines=[];
     for (let i = 0; i < yAxis.length; i++) {
       const numList = yAxis[i];
       const { rect, color } = this.gerernateRect(numList, i);
@@ -38,6 +43,15 @@ class KLineChart extends AxisChart {
         },
         { strokeStyle: color }
       );
+      lines.push({
+        x:rect.x + rect.width / 2,
+        y:(dataMax - numList[3]) * stepSize
+      })
+      //折线图
+      // drawCanvas.lineTo({
+      //   x:rect.x + rect.width / 2,
+      //   y1:(dataMax - numList[3]) * stepSize
+      // });
       const minYAxis = Math.abs(
         rect.y + rect.height - (dataMax - numList[2]) * stepSize
       );
@@ -51,6 +65,27 @@ class KLineChart extends AxisChart {
         { strokeStyle: color }
       );
     }
+    for(let i=0;i<lines.length;i++){
+      if(i===0){
+        continue;
+      }
+      const cur = lines[i];
+      const prev = lines[i-1];
+      drawCanvas.lineTo({
+        x1:prev.x,
+        y1:prev.y,
+        x2:cur.x,
+        y2:cur.y
+      },{
+        strokeStyle:"#074883"
+      });
+    }
+    // lines.reduce((prev,next)=>{
+    //   if(prev && prev.x && prev.y){
+    //     console.log(prev);
+    //     console.log(next);
+    //   }
+    // },[])
   }
   gerernateRect(numList, i) {
     const { width, left, xAxis, dataMax, stepSize } = this;

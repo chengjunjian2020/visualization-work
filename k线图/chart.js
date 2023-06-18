@@ -10,12 +10,12 @@ export default class Chart {
   drawCanvas;
   ctx;
   constructor(el, options) {
-    this.initData(el);
+    this.initData(el,options);
     this.initCanvas(el, options);
   }
-  initData = (el) => {
-    this.width = el.clientWidth;
-    this.height = el.clientHeight;
+  initData = (el,{width,height}) => {
+    this.width = width || el.clientWidth;
+    this.height = height || el.clientHeight;
   };
   initCanvas = (el, options) => {
     const { ctxStyle } = options;
