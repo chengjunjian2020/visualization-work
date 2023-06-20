@@ -27,5 +27,13 @@
     <div id="kLine2" class="kLine" style="width: 800px;">
       <div></div>
     </div>
+    <script type="module">
+      import KLineChart from "./index.js";
+      import { lineData1,lineData2 } from "./mock.js";
+      const count =2;
+      const stepCount = Math.floor(lineData1.length/count);
+      
+      new KLineChart(document.getElementById("kLine"), { data:lineData2.slice(0,5),width:800 });
+    </script>
   </body>
 </html>
