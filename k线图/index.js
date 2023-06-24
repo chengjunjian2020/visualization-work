@@ -47,11 +47,7 @@ class KLineChart extends AxisChart {
         x:rect.x + rect.width / 2,
         y:(dataMax - numList[3]) * stepSize
       })
-      //折线图
-      // drawCanvas.lineTo({
-      //   x:rect.x + rect.width / 2,
-      //   y1:(dataMax - numList[3]) * stepSize
-      // });
+      
       const minYAxis = Math.abs(
         rect.y + rect.height - (dataMax - numList[2]) * stepSize
       );
@@ -65,19 +61,28 @@ class KLineChart extends AxisChart {
         { strokeStyle: color }
       );
     }
+    console.log(lines)
     for(let i=0;i<lines.length;i++){
       if(i===0){
         continue;
       }
       const cur = lines[i];
       const prev = lines[i-1];
+      console.log({
+        x1:(prev.x),
+        y1:(prev.y),
+        x2:(cur.x),
+        y2:(cur.y)
+      })
+      // drawCanvas.ctx.lineJoin = 'round'; 
+      // drawCanvas.ctx.lineCap = 'round';
       drawCanvas.lineTo({
-        x1:prev.x,
-        y1:prev.y,
-        x2:cur.x,
-        y2:cur.y
+        x1:(prev.x),
+        y1:Math.floor(prev.y),
+        x2:(cur.x),
+        y2:Math.floor(cur.y)
       },{
-        strokeStyle:"#074883"
+        strokeStyle:"red"
       });
     }
     // lines.reduce((prev,next)=>{
