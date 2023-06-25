@@ -18,14 +18,35 @@
         height: 700px;
         margin: 230px;
       }
+      .k-line-tip-alert {
+        /* opacity: 0.9;
+        background: #f2f4fa;
+        position: absolute;
+        color: #525252;
+        padding: 8px 15px;
+        z-index: 1;
+        top: 120px;
+        display: none; */
+      }
     </style>
   </head>
   <body>
     <div class="kLine" id="kLine">
       <div></div>
     </div>
-    <div id="kLine2" class="kLine" style="width: 800px;">
+    <div id="kLine2" class="kLine" style="width: 800px">
       <div></div>
     </div>
+    <script type="module">
+      import KLineChart from "./index.js";
+      import { lineData1, lineData2 } from "./mock.js";
+      const count = 2;
+      const stepCount = Math.floor(lineData1.length / count);
+
+      new KLineChart(document.getElementById("kLine"), {
+        data: lineData2.slice(0, 5),
+        // width: 800,
+      });
+    </script>
   </body>
 </html>

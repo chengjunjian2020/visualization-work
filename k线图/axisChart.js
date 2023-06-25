@@ -24,6 +24,7 @@ export default class AxisChart extends Chart {
       top: "120px",
       "min-width": "116px",
       cursor: "pointer",
+      display: "none",
     });
   }
   initSelfData = (options) => {
@@ -82,18 +83,18 @@ export default class AxisChart extends Chart {
         y: height - xAxisTextOffset,
       };
       // if(i%3===0){
-        drawCanvas.fillText(
-          {
-            text: xAxis[i],
-            ...point,
-          },
-          {
-            font: 14,
-            fillStyle: "red",
-          }
-        );
+      drawCanvas.fillText(
+        {
+          text: xAxis[i],
+          ...point,
+        },
+        {
+          font: 14,
+          fillStyle: "red",
+        }
+      );
       // }
-     
+
       // }
     }
   };
