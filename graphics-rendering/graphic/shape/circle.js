@@ -1,5 +1,6 @@
 import { isObject } from "../../tool/is";
-export class Circle {
+import { Shape } from "./shape.js";
+export class Circle extends Shape {
   shape = {
     cx: 0,
     cy: 0,
@@ -8,14 +9,26 @@ export class Circle {
   style;
 
   constructor(shape, style) {
-    init(shape, style);
+    super();
+    initCircle(shape, style);
   }
-  init(shape, style) {
+  initCircle(shape, style) {
     if (shape) {
       this.shape = { ...this.shape, shape };
     }
     if (isObject(style)) {
       this.style = style;
     }
+  }
+  draw(ctx) {
+    const { cx, cy, r } = this.shape;
+    const { fillColor = "black" } = this.style;
+    ctx.save();
+    ctx.beginPath();
+    ctx.fillStyle = fillColor;
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
+    ctx.restore();
   }
 }
