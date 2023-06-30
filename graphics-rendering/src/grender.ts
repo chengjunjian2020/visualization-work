@@ -1,4 +1,4 @@
-import { isDom } from "./tool/is.js";
+import { isDom } from "../tool/is.js";
 export const move = "mousemove";
 export const click = "mousedown";
 export class Grender {
