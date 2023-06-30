@@ -1,13 +1,19 @@
-import { isDom } from "../tool/is.js";
+import { isDom } from "./tool/is";
 export const move = "mousemove";
 export const click = "mousedown";
+
 export class Grender {
-  layer = [];
-  canvas;
-  constructor(dom) {
+  layer: [];
+  allShapes: [];
+  undoStack: [];
+  redoStack: [];
+  shapePropsDiffMap:Map<string,any>;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D | undefined;
+  constructor(dom: HTMLCanvasElement) {
     this.init(dom);
   }
-  init(dom) {
+  init(dom: HTMLCanvasElement) {
     if (!dom || !isDom(dom) || !dom.getContext) {
       throw new Error("请传入canvas标签");
     }
@@ -19,7 +25,7 @@ export class Grender {
 
     this.redoStack = [];
     this.shapePropsDiffMap = new Map();
-    this.canvas.addEventListener(click, (event) => {
+    this.canvas.addEventListener(click, (event:MouseEvent & {type:}) => {
       event.type = click;
       this.handleEvent(event);
     });
