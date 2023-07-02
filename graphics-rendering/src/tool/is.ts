@@ -1,11 +1,11 @@
 // 判断是否是一个dom对象
-export const isDom = (el) => {
+export const isDom = (el:HTMLElement) => {
   return typeof el === "object"
     ? el instanceof HTMLElement
     : el &&
-        typeof obj === "object" &&
-        obj.nodeType === 1 &&
-        typeof obj.nodeName === "string";
+        typeof el === "object" &&
+        (el as HTMLElement).nodeType === 1 &&
+        typeof (el as HTMLElement).nodeName === "string";
 };
 
-export const isObject = (obj) => obj && obj.toString() === "[object Object]";
+export const isObject = (obj:Object) => obj && obj.toString() === "[object Object]";

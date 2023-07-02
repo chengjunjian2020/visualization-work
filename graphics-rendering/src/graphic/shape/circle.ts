@@ -1,28 +1,38 @@
-import { isObject } from "../../tool/is";
-import { Shape } from "./shape.js";
-export class Circle extends Shape {
-  shape = {
-    cx: 0,
-    cy: 0,
-    r: 0,
-  };
-  style;
+import { isObject } from "/tool/is";
+import { Shape } from "./shape";
+import { Grender } from "/grender";
+import { Box2 } from "/core/box2";
+import { Point2d } from "/core/point";
+import type { Graphic } from "../type";
 
-  constructor(shape, style) {
+interface ICircle{
+  shape:{
+    cx:number,
+    cy:number,
+    r:number
+  },
+  style:Record<string,string>
+}
+export class Circle extends Shape {
+  props:ICircle={
+    shape:{
+      cx: 0,
+      cy: 0,
+      r: 0,
+    },
+    style:{}
+  }
+  
+  constructor(props:ICircle) {
     super();
-    initCircle(shape, style);
+    this.initCircle(props);
   }
-  initCircle(shape, style) {
-    if (shape) {
-      this.shape = { ...this.shape, shape };
-    }
-    if (isObject(style)) {
-      this.style = style;
-    }
+  initCircle(props:ICircle) {
+    this.props=props;
   }
-  draw(ctx) {
-    const { cx, cy, r } = this.shape;
-    const { fillColor = "black" } = this.style;
+  draw(ctx:CanvasRenderingContext2D) {
+    const { cx, cy, r } = this.props.shape;
+    const { fillColor = "black" } = this.props.style;
     ctx.save();
     ctx.beginPath();
     ctx.fillStyle = fillColor;
@@ -30,5 +40,16 @@ export class Circle extends Shape {
     ctx.fill();
     ctx.closePath();
     ctx.restore();
+  }
+  change(props:ICircle,grender:Grender){
+    grender.shapePropsDiffMap.set(this as any,{props:this.props,...props});
+    grender.reloadDraw();
+  }
+  //获取边界
+  getBounding(){
+    const {shape:{cx,cy,r}} = this.props;
+    const min = new Point2d(cx-r,cy-r);
+    const max = new Point2d(cx+r,cy+r);
+    return new Box2(min,max)
   }
 }

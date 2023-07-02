@@ -1,13 +1,18 @@
 import { isDom } from "./tool/is";
+import { EventName } from "./enum/eventEnum"
+import { Point2d } from "./core/point";
+import { EventCallback, ShapeMouseEvent } from "./types/event";
+import { Shape } from "./graphic/shape/shape";
+import { Graphic } from "./graphic/type";
 export const move = "mousemove";
 export const click = "mousedown";
 
 export class Grender {
   layer: [];
-  allShapes: [];
+  allShapes: Array<Graphic>;
   undoStack: [];
   redoStack: [];
-  shapePropsDiffMap:Map<string,any>;
+  shapePropsDiffMap: Map<Graphic, any>;//图形实例->图形参数 映射容器
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D | undefined;
   constructor(dom: HTMLCanvasElement) {
@@ -25,31 +30,49 @@ export class Grender {
 
     this.redoStack = [];
     this.shapePropsDiffMap = new Map();
-    this.canvas.addEventListener(click, (event:MouseEvent & {type:}) => {
-      event.type = click;
-      this.handleEvent(event);
+    this.canvas.addEventListener(EventName.click, (event: MouseEvent) => {
+      this.handleEvent(event, EventName.click);
     });
   }
-  handleEvent(event) {
+  handleEvent(event: MouseEvent, type: EventName) {
     const { offsetX, offsetY } = event;
-    event = {
+    const newsEvent: ShapeMouseEvent = {
       ...event,
       point: new Point2d(offsetX, offsetY),
       isStopBubble: false,
+      TYPE: type
     };
-    this.allShapes.forEach((shape) => {
-      const listener = shape.listenerMap.get(event.type);
+    this.allShapes.forEach((shape: Graphic) => {
+      const listener: Array<EventCallback> = shape.listenerMap.get(event.type);
       if (
         listener &&
-        shape.isPointInClosedRegion(event) &&
-        !event.isStopBubble
+        shape.isPointInClosedRegion(newsEvent) &&
+        !newsEvent.isStopBubble
       ) {
-        listerns.forEach((listener) => listener(event));
+        listener.forEach((listener) => listener(newsEvent));
       }
     });
   }
-  add(shape) {
+  add(shape: Graphic) {
     shape.draw(this.ctx);
     this.allShapes.push(shape);
+  }
+  clear(){
+    const {ctx,canvas} = this;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  reloadDraw() {
+    const { shapePropsDiffMap,allShapes,ctx } = this;
+    this.clear();
+    shapePropsDiffMap.forEach((props, shape) => {
+      shape.props = { ...shape.props, ...props };
+      shape.draw(ctx);
+      // const { allShapes } = this;
+      // const curShape = shape.getBounding();
+      //相交图形
+      // const intersectShaps = allShapes.filter(shapeItem =>
+      //    shape !== shapeItem && shapeItem.getBounding().intersectsBox(curShape))
+    })
+    
   }
 }

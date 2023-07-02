@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			#canvas {
+				width: 300px;
+				height: 300px;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas" width="300" height="300"></canvas>
+		<script type="module">
+			import { Grender, Circle } from "../lib/index.js";
+			const canvas = document.getElementById("canvas");
+			const grender = new Grender(canvas);
+			const circle = new Circle({
+				shape: { cx: 50, cy: 50, r: 20 },
+				style: {
+					fillColor: "red",
+				},
+			});
+			grender.add(circle);
+			circle.change({
+                shape: { cx: 50, cy: 50, r: 30 },
+				style: {
+					fillColor: "blue",
+				},
+			},grender);
+		</script>
+	</body>
+</html>
