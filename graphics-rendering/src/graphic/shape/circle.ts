@@ -1,6 +1,6 @@
 import { isObject } from "/tool/is";
 import { Shape } from "./shape";
-import mixins from "/mixin/shape";
+import mixins, { setShapeStyle } from "/mixin/shape";
 import { Grender } from "/grender";
 import { Box2 } from "/core/box2";
 import { Point2d } from "/core/point";
@@ -24,7 +24,7 @@ export class Circle extends Shape {
 		},
 		style: null,
 	};
-
+	curCtx: CanvasRenderingContext2D; //绑定的canvas ctx上下文
 	constructor(props: ICircle) {
 		super();
 		this.initCircle(props);
@@ -32,18 +32,23 @@ export class Circle extends Shape {
 	initCircle(props: ICircle) {
 		this.props = props;
 	}
-	draw(ctx: CanvasRenderingContext2D) {
-		const { cx, cy, r } = this.props.shape;
+	arc(shape: ICircle["shape"]) {
+		const { curCtx } = this;
+		this.props.shape = shape;
+		this.draw(curCtx, shape);
+	}
+	draw(ctx: CanvasRenderingContext2D, shape = this.props.shape) {
+		const { cx, cy, r } = shape;
 		const { style } = this.props;
 		ctx.save();
 		ctx.beginPath();
-		this.setShapeStyle(style, ctx);
+		setShapeStyle(style, ctx);
 		ctx.arc(cx, cy, r, 0, Math.PI * 2);
 		ctx.fill();
 		ctx.closePath();
 		ctx.restore();
-		console.log(this);
 	}
+
 	//获取边界
 	getBounding() {
 		const {
@@ -54,15 +59,16 @@ export class Circle extends Shape {
 		return new Box2(min, max);
 	}
 	isPointInClosedRegion(shapeMouseEvent: ShapeMouseEvent) {
-		return false;
+		const { cx, cy, r } = this.props.shape;
+		return shapeMouseEvent.point.distance(new Point2d(cx, cy)) <= r * r;
 	}
-	change<T>(props: T, grender: Grender) {
-		console.log("--", this);
-		grender.shapePropsDiffMap.set(this, {
-			props: this.props,
-			...props,
-		});
-		grender.reloadDraw();
-	}
+	// change<T>(props: T, grender: Grender) {
+	// 	console.log("--", this);
+	// 	grender.shapePropsDiffMap.set(this, {
+	// 		props: this.props,
+	// 		...props,
+	// 	});
+	// 	grender.reloadDraw();
+	// }
 }
-// mixins(Circle);
+mixins(Circle);

@@ -7,6 +7,10 @@ import { Graphic } from "./graphic/type";
 export const move = "mousemove";
 export const click = "mousedown";
 
+interface CanvasOption {
+	width: number;
+	height: number;
+}
 export class Grender {
 	layer: [];
 	allShapes: Array<Graphic>;
@@ -15,14 +19,14 @@ export class Grender {
 	shapePropsDiffMap: Map<Graphic, any>; //图形实例->图形参数 映射容器
 	canvas: HTMLCanvasElement;
 	ctx: CanvasRenderingContext2D;
-	constructor(dom: HTMLCanvasElement) {
-		this.init(dom);
+	constructor(dom: HTMLCanvasElement, optins: CanvasOption) {
+		this.init(dom, optins);
 	}
-	init(dom: HTMLCanvasElement) {
+	init(dom: HTMLCanvasElement, options: CanvasOption) {
 		if (!dom || !isDom(dom) || !dom.getContext) {
 			throw new Error("请传入canvas标签");
 		}
-		this.canvas = dom;
+		this.canvas = this.initCanvas(dom, options);
 		this.ctx = this.canvas.getContext("2d");
 		//存储图形容器
 		this.allShapes = [];
@@ -34,10 +38,18 @@ export class Grender {
 			this.handleEvent(event, EventName.click);
 		});
 	}
+	initCanvas(canvas: HTMLCanvasElement, options: CanvasOption) {
+		const { width = 400, height = 500 } = options;
+		canvas.width = width;
+		canvas.height = height;
+		canvas.style.width = width + "px";
+		canvas.style.height = height + "px";
+		return canvas;
+	}
 	handleEvent(event: MouseEvent, type: EventName) {
 		const { offsetX, offsetY } = event;
 		const newsEvent: ShapeMouseEvent = {
-			...event,
+			event,
 			point: new Point2d(offsetX, offsetY),
 			isStopBubble: false,
 			TYPE: type,
@@ -64,10 +76,9 @@ export class Grender {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	}
 	reloadDraw() {
-		const { shapePropsDiffMap, allShapes, ctx } = this;
+		const { allShapes, ctx } = this;
 		this.clear();
-		shapePropsDiffMap.forEach((props, shape) => {
-			shape.props = { ...shape.props, ...props };
+		allShapes.forEach(shape => {
 			shape.draw(ctx);
 			// const { allShapes } = this;
 			// const curShape = shape.getBounding();
