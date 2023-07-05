@@ -7,6 +7,7 @@ import { Point2d } from "/core/point";
 import type { Graphic } from "../type";
 import { ShapeMouseEvent } from "/types/event";
 
+let count = 0;
 interface ICircle {
 	shape: {
 		cx: number;
@@ -24,6 +25,7 @@ export class Circle extends Shape {
 		},
 		style: null,
 	};
+	id: string;
 	curCtx: CanvasRenderingContext2D; //绑定的canvas ctx上下文
 	constructor(props: ICircle) {
 		super();
@@ -31,6 +33,7 @@ export class Circle extends Shape {
 	}
 	initCircle(props: ICircle) {
 		this.props = props;
+		this.id = `Circle-${++count}`;
 	}
 	arc(shape: ICircle["shape"]) {
 		const { curCtx } = this;
@@ -62,13 +65,5 @@ export class Circle extends Shape {
 		const { cx, cy, r } = this.props.shape;
 		return shapeMouseEvent.point.distance(new Point2d(cx, cy)) <= r * r;
 	}
-	// change<T>(props: T, grender: Grender) {
-	// 	console.log("--", this);
-	// 	grender.shapePropsDiffMap.set(this, {
-	// 		props: this.props,
-	// 		...props,
-	// 	});
-	// 	grender.reloadDraw();
-	// }
 }
 mixins(Circle);

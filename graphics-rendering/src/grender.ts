@@ -6,7 +6,7 @@ import { Shape } from "./graphic/shape/shape";
 import { Graphic } from "./graphic/type";
 export const move = "mousemove";
 export const click = "mousedown";
-
+//冒泡处理 层级处理 多边形事件 图形拖拽 移除事件 画布拖
 interface CanvasOption {
 	width: number;
 	height: number;
@@ -22,7 +22,7 @@ export class Grender {
 	constructor(dom: HTMLCanvasElement, optins: CanvasOption) {
 		this.init(dom, optins);
 	}
-	init(dom: HTMLCanvasElement, options: CanvasOption) {
+	private init(dom: HTMLCanvasElement, options: CanvasOption) {
 		if (!dom || !isDom(dom) || !dom.getContext) {
 			throw new Error("请传入canvas标签");
 		}
@@ -38,7 +38,7 @@ export class Grender {
 			this.handleEvent(event, EventName.click);
 		});
 	}
-	initCanvas(canvas: HTMLCanvasElement, options: CanvasOption) {
+	private initCanvas(canvas: HTMLCanvasElement, options: CanvasOption) {
 		const { width = 400, height = 500 } = options;
 		canvas.width = width;
 		canvas.height = height;
@@ -46,26 +46,44 @@ export class Grender {
 		canvas.style.height = height + "px";
 		return canvas;
 	}
-	handleEvent(event: MouseEvent, type: EventName) {
+	private generateEvent(
+		event: MouseEvent,
+		type: EventName,
+		stopPropagation: ShapeMouseEvent["stopPropagation"]
+	) {
 		const { offsetX, offsetY } = event;
-		const newsEvent: ShapeMouseEvent = {
+		let evnetParam: Omit<ShapeMouseEvent, "stopPropagation"> = {
 			event,
 			point: new Point2d(offsetX, offsetY),
-			isStopBubble: false,
 			TYPE: type,
 		};
-		this.allShapes.forEach((shape: Graphic) => {
+		const newsEvent = { ...evnetParam, stopPropagation };
+		return newsEvent;
+	}
+	private handleEvent(event: MouseEvent, type: EventName) {
+		let batchStopBubble = false;
+		for (let i = this.allShapes.length - 1; i >= 0; i--) {
+			const shape = this.allShapes[i];
 			const listener: Array<EventCallback> = shape.listenerMap.get(
 				event.type
+			);
+			const newsEvent = this.generateEvent(
+				event,
+				type,
+				shape.stopPropagation
 			);
 			if (
 				listener &&
 				shape.isPointInClosedRegion(newsEvent) &&
-				!newsEvent.isStopBubble
+				!batchStopBubble
 			) {
 				listener.forEach(listener => listener(newsEvent));
 			}
-		});
+			if (shape.isStopBubble) {
+				batchStopBubble = true;
+			}
+		}
+		console.log(this.allShapes);
 	}
 	add(shape: Graphic) {
 		shape.draw(this.ctx);

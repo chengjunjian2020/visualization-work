@@ -3,9 +3,9 @@ import { EventName } from "/enum/eventEnum";
 
 export interface ShapeMouseEvent {
 	point: Point2d;
-	isStopBubble: boolean;
 	TYPE: EventName;
-	event: MouseEvent;
+	event: Event | MouseEvent;
+	stopPropagation: () => void;
 }
 
 export type EventCallback = (event: ShapeMouseEvent) => void;

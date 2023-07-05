@@ -3,6 +3,7 @@ import { Grender } from "/grender";
 import mixins, { setShapeStyle } from "/mixin/shape";
 import { ShapeMouseEvent } from "/types/event";
 
+let count = 0;
 interface IRect {
 	shape: {
 		x: number;
@@ -22,6 +23,7 @@ export class Rect extends Shape {
 		},
 		style: null,
 	};
+	id: string;
 	curCtx: CanvasRenderingContext2D; //绑定的canvas ctx上下文
 	constructor(props: IRect) {
 		super();
@@ -29,6 +31,7 @@ export class Rect extends Shape {
 	}
 	initRect(props: IRect) {
 		this.props = { ...this.props, ...props };
+		this.id = `Rect-${++count}`;
 	}
 	fillRect(shape: IRect["shape"]) {
 		const { curCtx } = this;
@@ -60,7 +63,17 @@ export class Rect extends Shape {
 		ctx.restore();
 	}
 	isPointInClosedRegion(shapeMouseEvent: ShapeMouseEvent) {
-		
+		const { x: mouseX, y: mouseY } = shapeMouseEvent.point;
+		const { x, y, width, height } = this.props.shape;
+		if (
+			mouseX >= x &&
+			mouseX <= x + width &&
+			mouseY >= y &&
+			mouseY <= y + height
+		) {
+			return true;
+		}
+		return false;
 	}
 }
 mixins(Rect);
