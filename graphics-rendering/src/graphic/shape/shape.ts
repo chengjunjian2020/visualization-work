@@ -7,19 +7,13 @@ export class Shape {
 	constructor() {
 		this.listenerMap = new Map();
 	}
-	on(eventName: EventName, listener: EventCallback) {
+	on(names: EventName, listener: EventCallback) {
 		const { listenerMap } = this;
+		const eventName = Object.keys(EventName).find(name => name === names);
 		if (listenerMap.has(eventName)) {
 			listenerMap.get(eventName).push(listener);
 		} else {
 			listenerMap.set(eventName, [listener]);
 		}
 	}
-	// getMouse(evet: ShapeMouseEvent) {
-	// 	return new Point2d(evet.offsetX, evet.offsetY);
-	// }
-
-	// isPointInClosedRegion(evet:ShapeMouseEvent){
-	//   return false;
-	// }
 }

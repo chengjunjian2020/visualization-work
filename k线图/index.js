@@ -23,13 +23,13 @@ class KLineChart extends AxisChart {
       this._listenerEvent();
     }
   }
-  drawLines(){
+  drawLines() {
     // const {yAxis} = this;
     // for(){}
   }
   drawSeries() {
     const { yAxis, dataMax, stepSize, drawCanvas } = this;
-    const lines=[];
+    const lines = [];
     for (let i = 0; i < yAxis.length; i++) {
       const numList = yAxis[i];
       const { rect, color } = this.gerernateRect(numList, i);
@@ -44,10 +44,10 @@ class KLineChart extends AxisChart {
         { strokeStyle: color }
       );
       lines.push({
-        x:rect.x + rect.width / 2,
-        y:(dataMax - numList[3]) * stepSize
-      })
-      
+        x: rect.x + rect.width / 2,
+        y: (dataMax - numList[3]) * stepSize,
+      });
+
       const minYAxis = Math.abs(
         rect.y + rect.height - (dataMax - numList[2]) * stepSize
       );
@@ -61,29 +61,31 @@ class KLineChart extends AxisChart {
         { strokeStyle: color }
       );
     }
-    console.log(lines)
-    for(let i=0;i<lines.length;i++){
-      if(i===0){
+    for (let i = 0; i < lines.length; i++) {
+      if (i === 0) {
         continue;
       }
       const cur = lines[i];
-      const prev = lines[i-1];
+      const prev = lines[i - 1];
       console.log({
-        x1:(prev.x),
-        y1:(prev.y),
-        x2:(cur.x),
-        y2:(cur.y)
-      })
-      // drawCanvas.ctx.lineJoin = 'round'; 
-      // drawCanvas.ctx.lineCap = 'round';
-      drawCanvas.lineTo({
-        x1:(prev.x),
-        y1:Math.floor(prev.y),
-        x2:(cur.x),
-        y2:Math.floor(cur.y)
-      },{
-        strokeStyle:"red"
+        x1: prev.x,
+        y1: prev.y,
+        x2: cur.x,
+        y2: cur.y,
       });
+      // drawCanvas.ctx.lineJoin = 'round';
+      // drawCanvas.ctx.lineCap = 'round';
+      drawCanvas.lineTo(
+        {
+          x1: prev.x,
+          y1: Math.floor(prev.y),
+          x2: cur.x,
+          y2: Math.floor(cur.y),
+        },
+        {
+          strokeStyle: "red",
+        }
+      );
     }
     // lines.reduce((prev,next)=>{
     //   if(prev && prev.x && prev.y){

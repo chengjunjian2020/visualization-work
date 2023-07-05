@@ -1,6 +1,7 @@
 import { Shape } from "./shape";
 import { Grender } from "/grender";
 import mixins, { setShapeStyle } from "/mixin/shape";
+import { ShapeMouseEvent } from "/types/event";
 
 interface IRect {
 	shape: {
@@ -57,6 +58,9 @@ export class Rect extends Shape {
 		}
 		ctx.closePath();
 		ctx.restore();
+	}
+	isPointInClosedRegion(shapeMouseEvent: ShapeMouseEvent) {
+		
 	}
 }
 mixins(Rect);

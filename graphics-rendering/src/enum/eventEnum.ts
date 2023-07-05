@@ -1,5 +1,5 @@
 // enum
-export enum EventName{
-    MOVE="mousemove",
-    click="mousedown"
+export enum EventName {
+	MOVE = "mousemove",
+	click = "click",
 }
