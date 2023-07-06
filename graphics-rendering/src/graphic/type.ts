@@ -7,7 +7,7 @@ import { ShapeMouseEvent } from "/types/event";
 export declare class Graphic extends Shape {
 	props: Record<string, any>;
 	constructor(props: Record<string, any>);
-	initCircle(shape: Record<string, any>, style: Record<string, string>): void;
+	// initCircle(shape: Record<string, any>, style: Record<string, string>): void;
 	draw(ctx: CanvasRenderingContext2D): void;
 	getBounding(): Box2;
 	change(props: Record<string, any>, grender: Grender): void;

@@ -17,8 +17,15 @@ export class Shape {
 			listenerMap.set(eventName, [listener]);
 		}
 	}
+	off(names?: EventName) {
+		const { listenerMap } = this;
+		if (names === undefined) {
+			listenerMap.clear();
+		} else if (listenerMap.has(names)) {
+			listenerMap.delete(names);
+		}
+	}
 	stopPropagation = () => {
 		this.isStopBubble = true;
-		console.log(this.isStopBubble);
 	};
 }
