@@ -6,8 +6,6 @@ import { Box2 } from "/core/box2";
 import { Point2d } from "/core/point";
 import type { Graphic } from "../type";
 import { ShapeMouseEvent } from "/types/event";
-
-let count = 0;
 interface ICircle {
 	shape: {
 		cx: number;
@@ -25,7 +23,6 @@ export class Circle extends Shape {
 		},
 		style: null,
 	};
-	id: string;
 	curCtx: CanvasRenderingContext2D; //绑定的canvas ctx上下文
 	constructor(props: ICircle) {
 		super();
@@ -33,7 +30,6 @@ export class Circle extends Shape {
 	}
 	initCircle(props: ICircle) {
 		this.props = props;
-		this.id = `Circle-${++count}`;
 	}
 	arc(shape: ICircle["shape"]) {
 		const { curCtx } = this;

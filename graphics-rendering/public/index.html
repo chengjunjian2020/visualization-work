@@ -9,7 +9,7 @@
 	<body>
 		<canvas id="canvas" width="300" height="300"></canvas>
 		<script type="module">
-			import { Grender, Circle, Rect } from "../lib/index.js";
+			import { Grender, Circle, Rect, Polygon } from "../lib/index.js";
 			const canvas = document.getElementById("canvas");
 			const grender = new Grender(canvas, { width: 500, height: 500 });
 			const circle = new Circle({
@@ -28,9 +28,21 @@
 				shape: { x: 100, y: 70, width: 80, height: 80 },
 				style: { fillStyle: "red" },
 			});
+			const polygon = new Polygon({
+				shape: {
+					points: [
+						{ x: 300, y: 320 },
+						{ x: 380, y: 400 },
+						{ x: 120, y: 400 },
+						{ x: 20, y: 110 },
+					],
+				},
+				style: { fillStyle: "pink" },
+			});
 			grender.add(circle);
 			grender.add(circle2);
 			grender.add(rect);
+			grender.add(polygon);
 			circle.on("click", e => {
 				console.log("点击圆");
 			});
@@ -40,6 +52,9 @@
 			});
 			rect.on("click", e => {
 				console.log("点击矩形");
+			});
+			polygon.on("click", e => {
+				console.log("点击多边形");
 			});
 			// setTimeout(() => {
 			// 	circle.change(

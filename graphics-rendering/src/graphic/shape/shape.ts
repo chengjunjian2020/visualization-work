@@ -2,11 +2,14 @@ import { Point2d } from "/core/point";
 import { EventName } from "/enum/eventEnum";
 import { EventCallback, ShapeMouseEvent } from "/types/event";
 
+let id = 0;
 export class Shape {
 	listenerMap: Map<string, Array<EventCallback>>; //事件容器
 	isStopBubble = false; //是否阻止冒泡
+	id: number;
 	constructor() {
 		this.listenerMap = new Map();
+		this.id = ++id;
 	}
 	on(names: EventName, listener: EventCallback) {
 		const { listenerMap } = this;
