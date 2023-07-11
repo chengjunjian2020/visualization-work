@@ -4,47 +4,33 @@ import { Point2d } from "./core/point";
 import { EventCallback, ShapeMouseEvent } from "./types/event";
 import { Shape } from "./graphic/shape/shape";
 import { Graphic } from "./graphic/type";
+import DataStorage from "./dataStorage";
+import { Painter } from "./core/painter";
 export const move = "mousemove";
 export const click = "mousedown";
 //冒泡处理 层级处理 多边形事件 图形拖拽 移除事件 画布拖
-interface CanvasOption {
+export interface IGrenderOps {
 	width: number;
 	height: number;
 }
 export class Grender {
 	layer: [];
-	allShapes: Array<Graphic>;
-	undoStack: [];
-	redoStack: [];
-	shapePropsDiffMap: Map<Graphic, any>; //图形实例->图形参数 映射容器
-	canvas: HTMLCanvasElement;
+	allShapes: DataStorage;
 	ctx: CanvasRenderingContext2D;
-	constructor(dom: HTMLCanvasElement, optins: CanvasOption) {
-		this.init(dom, optins);
+	painter: Painter;
+	constructor(root: HTMLCanvasElement, optins: IGrenderOps) {
+		this.init(root, optins);
 	}
-	private init(dom: HTMLCanvasElement, options: CanvasOption) {
-		if (!dom || !isDom(dom) || !dom.getContext) {
-			throw new Error("请传入canvas标签");
+	private init(root: HTMLCanvasElement, options: IGrenderOps) {
+		if (!root || !isDom(root)) {
+			throw new Error("请传入DOM签");
 		}
-		this.canvas = this.initCanvas(dom, options);
-		this.ctx = this.canvas.getContext("2d");
 		//存储图形容器
-		this.allShapes = [];
-		this.undoStack = [];
-
-		this.redoStack = [];
-		this.shapePropsDiffMap = new Map();
-		this.canvas.addEventListener(EventName.click, (event: MouseEvent) => {
-			this.handleEvent(event, EventName.click);
-		});
-	}
-	private initCanvas(canvas: HTMLCanvasElement, options: CanvasOption) {
-		const { width = 400, height = 500 } = options;
-		canvas.width = width;
-		canvas.height = height;
-		canvas.style.width = width + "px";
-		canvas.style.height = height + "px";
-		return canvas;
+		this.allShapes = new DataStorage();
+		this.painter = new Painter(root, options);
+		// this.canvas.addEventListener(EventName.click, (event: MouseEvent) => {
+		// 	this.handleEvent(event, EventName.click);
+		// });
 	}
 	private generateEvent(
 		event: MouseEvent,
