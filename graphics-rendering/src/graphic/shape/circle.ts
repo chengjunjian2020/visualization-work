@@ -5,7 +5,7 @@ import { Grender } from "/grender";
 import { Box2 } from "/core/box2";
 import { Point2d } from "/core/point";
 import type { Graphic } from "../type";
-import { ShapeMouseEvent } from "/types/event";
+import { ShapeEvent } from "/types/event";
 interface ICircle {
 	shape: {
 		cx: number;
@@ -57,9 +57,9 @@ export class Circle extends Shape {
 		const max = new Point2d(cx + r, cy + r);
 		return new Box2(min, max);
 	}
-	isPointInClosedRegion(shapeMouseEvent: ShapeMouseEvent) {
+	isPointInClosedRegion(shapeEvent: ShapeEvent) {
 		const { cx, cy, r } = this.props.shape;
-		return shapeMouseEvent.point.distance(new Point2d(cx, cy)) <= r * r;
+		return shapeEvent.point.distance(new Point2d(cx, cy)) <= r * r;
 	}
 }
 mixins(Circle);

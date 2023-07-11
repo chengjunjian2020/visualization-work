@@ -2,7 +2,7 @@ import { Shape } from "./shape/shape";
 import { Box2 } from "/core/box2";
 import { Point2d } from "/core/point";
 import { Grender } from "/grender";
-import { ShapeMouseEvent } from "/types/event";
+import { ShapeEvent } from "/types/event";
 
 export declare class Graphic extends Shape {
 	props: Record<string, any>;
@@ -11,5 +11,5 @@ export declare class Graphic extends Shape {
 	draw(ctx: CanvasRenderingContext2D): void;
 	getBounding(): Box2;
 	change(props: Record<string, any>, grender: Grender): void;
-	isPointInClosedRegion(ShapeMouseEvent: ShapeMouseEvent): boolean;
+	isPointInClosedRegion(ShapeMouseEvent: ShapeEvent): boolean;
 }

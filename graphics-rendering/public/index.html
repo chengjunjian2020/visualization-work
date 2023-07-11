@@ -4,58 +4,61 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
-		<style></style>
+		<style>
+			#main{
+				border: 1px solid red;
+			}
+		</style>
 	</head>
 	<body>
-		<canvas id="canvas" width="300" height="300"></canvas>
+		<div id="main" style="width:1000px;height:500px;"></div>
 		<script type="module">
-			import { Grender, Circle, Rect, Polygon } from "../lib/index.js";
-			const canvas = document.getElementById("canvas");
-			const grender = new Grender(canvas, { width: 500, height: 500 });
-			const circle = new Circle({
-				shape: { cx: 50, cy: 50, r: 20 },
-				style: {
-					fillStyle: "red",
-				},
-			});
-			const circle2 = new Circle({
-				shape: { cx: 80, cy: 50, r: 40 },
-				style: {
-					fillStyle: "blue",
-				},
-			});
-			const rect = new Rect({
-				shape: { x: 100, y: 70, width: 80, height: 80 },
-				style: { fillStyle: "red" },
-			});
-			const polygon = new Polygon({
-				shape: {
-					points: [
-						{ x: 300, y: 320 },
-						{ x: 380, y: 400 },
-						{ x: 120, y: 400 },
-						{ x: 20, y: 110 },
-					],
-				},
-				style: { fillStyle: "pink" },
-			});
-			grender.add(circle);
-			grender.add(circle2);
-			grender.add(rect);
-			grender.add(polygon);
-			circle.on("click", e => {
-				console.log("点击圆");
-			});
-			circle2.on("click", e => {
-				e.stopPropagation();
-				console.log("点击圆2");
-			});
-			rect.on("click", e => {
-				console.log("点击矩形");
-			});
-			polygon.on("click", e => {
-				console.log("点击多边形");
-			});
+			import { Grender} from "../lib/index.js";
+			const grender = new Grender(document.getElementById("main"), {  });
+			// const circle = new Circle({
+			// 	shape: { cx: 50, cy: 50, r: 20 },
+			// 	style: {
+			// 		fillStyle: "red",
+			// 	},
+			// });
+			// const circle2 = new Circle({
+			// 	shape: { cx: 80, cy: 50, r: 40 },
+			// 	style: {
+			// 		fillStyle: "blue",
+			// 	},
+			// });
+			// const rect = new Rect({
+			// 	shape: { x: 100, y: 70, width: 80, height: 80 },
+			// 	style: { fillStyle: "red" },
+			// });
+			// const polygon = new Polygon({
+			// 	shape: {
+			// 		points: [
+			// 			{ x: 300, y: 320 },
+			// 			{ x: 380, y: 400 },
+			// 			{ x: 120, y: 400 },
+			// 			{ x: 20, y: 110 },
+			// 		],
+			// 	},
+			// 	style: { fillStyle: "pink" },
+			// });
+			// grender.add(circle);
+			// grender.add(circle2);
+			// grender.add(rect);
+			// grender.add(polygon);
+			// circle.on("click", e => {
+			// 	console.log("点击圆");
+			// });
+			// circle2.on("click", e => {
+			// 	e.stopPropagation();
+			// 	console.log("点击圆2");
+			// });
+			// rect.on("click", e => {
+			// 	console.log("点击矩形");
+			// });
+			// polygon.on("click", e => {
+			// 	console.log("点击多边形");
+			// });
 			// setTimeout(() => {
 			// 	circle.change(
 			// 		{

@@ -1,6 +1,6 @@
 import { Point2d } from "/core/point";
 import { EventName } from "/enum/eventEnum";
-import { EventCallback, ShapeMouseEvent } from "/types/event";
+import { EventCallback, ShapeEvent } from "/types/event";
 
 let id = 0;
 export class Shape {

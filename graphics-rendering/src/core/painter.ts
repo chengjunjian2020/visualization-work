@@ -54,8 +54,11 @@ export class Painter {
 		const painterRoot = (this.wrapperDom = createRoot(width, height));
 		root.appendChild(painterRoot);
 		this.wrapperDom = painterRoot;
-		const canvas = createCanvas(options);
+		const canvas = createCanvas({width,height});
 		painterRoot.append(canvas);
 		this.canvas = canvas;
+	}
+	getContainer(){
+		return this.wrapperDom
 	}
 }

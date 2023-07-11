@@ -2,7 +2,7 @@ import { Point2d } from "/core/point";
 import { Seg2d } from "/core/seg2d";
 import { Shape } from "/index";
 import { setShapeStyle } from "/mixin/shape";
-import { ShapeMouseEvent } from "/types/event";
+import { ShapeEvent } from "/types/event";
 
 interface IPolygon {
 	shape: {
@@ -43,7 +43,7 @@ export class Polygon extends Shape {
 		ctx.closePath();
 		ctx.restore();
 	}
-	isPointInClosedRegion(shapeMouseEvent: ShapeMouseEvent) {
+	isPointInClosedRegion(shapeMouseEvent: ShapeEvent) {
 		const allSegs = Seg2d.getSegments(this.getDispersed(), true);
 		const start = shapeMouseEvent.point;
 		const xAxias = new Point2d(1, 0).multiplyScalar(800);
