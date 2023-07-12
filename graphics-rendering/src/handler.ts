@@ -1,5 +1,7 @@
+import Draggable, { DrddableTarget } from "./core/draggable";
 import HandlerProxy from "./core/handlerProxy";
 import DataStorage from "./dataStorage";
+import { Graphic } from "./graphic/type";
 import { Grender } from "./grender";
 import { generateEvent } from "./tool/dom";
 import { EventCallback } from "./types/event";
@@ -16,16 +18,20 @@ export default class Handler {
 
 	grender: Grender;
 
+	private _draggable: Draggable;
+
+	curShape: Graphic;
+
 	constructor({ handlerProxy, storage, grender }: HandlerParamer) {
 		this.handlerProxy = handlerProxy;
 		this.handlerProxy.$handler = this;
 		this.grender = grender;
 		this.storage = storage;
+		this._draggable = new Draggable(this);
 	}
 	dispatchToElement(eventName: string, event: MouseEvent) {
-        console.log("--")
 		let batchStopBubble = false;
-		const { storage } = this;
+		const { storage, grender } = this;
 		const allShapes = storage.getData();
 		for (let i = allShapes.length - 1; i >= 0; i--) {
 			const shape = allShapes[i];
@@ -50,12 +56,82 @@ export default class Handler {
 					0,
 					allShapes.splice(i, 1)[0]
 				);
-				// this.reloadDraw();
+				grender.refresh();
 				listener.forEach(listener => listener(newsEvent));
 			}
 			if (shape.isStopBubble) {
 				batchStopBubble = true;
 			}
 		}
+	}
+	// curDraffableShape(event: MouseEvent) {
+	// 	const { shapeList } = this.storage;
+	// 	for (let i = shapeList.length - 1; i >= 0; i--) {
+	// 		const shape = shapeList[i];
+	// 		const newsEvent = generateEvent(event, shape.stopPropagation);
+	// 		if (shape.isPointInClosedRegion(newsEvent)) {
+	// 			try {
+	// 				this.curShape = shape;
+	// 			} catch (e) {
+	// 				console.warn(shape);
+	// 				console.log(this);
+	// 				console.log(e);
+	// 			}
+
+	// 			shapeList.splice(
+	// 				shapeList.length,
+	// 				0,
+	// 				shapeList.splice(i, 1)[0]
+	// 			);
+	// 			break;
+	// 		}
+	// 	}
+	// }
+	draggableToMouseMove(event: MouseEvent, drggable: DrddableTarget) {
+		const { shapeList } = this.storage;
+		const { grender } = this;
+		const { dragStart, dragMove } = drggable;
+		const el = grender.painter.getContainer();
+		const bounding = el.getBoundingClientRect();
+		let curShapes;
+		console.log(event);
+		for (let i = shapeList.length - 1; i >= 0; i--) {
+			const shape = shapeList[i];
+			const newsEvent = generateEvent(event, shape.stopPropagation);
+			if (shape.isPointInClosedRegion(newsEvent)) {
+				try {
+					curShapes = shape;
+					// if()
+					shape.changePosition({
+						x: dragMove.x,
+						y: dragMove.y,
+					});
+				} catch (e) {
+					console.warn(shape);
+					console.log(this);
+					console.log(e);
+				}
+
+				shapeList.splice(
+					shapeList.length,
+					0,
+					shapeList.splice(i, 1)[0]
+				);
+				break;
+			}
+		}
+		if (!curShapes) {
+			return;
+		}
+		const { x, y } = curShapes.getPosition();
+		// const startMouseX = dragStart.x - bounding.left - x;
+		// const startMouseY = dragStart.y - bounding.top - y;
+
+		// const dragMouseX = dragMove.x - bounding.left - startMouseX;
+		// const dragMousey = dragMove.y - bounding.top - startMouseY;
+		// curShapes.changePosition({
+		// 	x: dragMove.x,
+		// 	y: dragMove.y,
+		// });
 	}
 }

@@ -7,15 +7,13 @@ type Dictionary<T> = {
 
 const localDOMHandlers: any = {
 	click: function (event: PointerEvent) {
-		console.log(event);
 		const _event = normalizeEvent(event);
-		console.log(this);
 		this.trigger("click", _event);
 	},
 };
 function mountLocalDOMEventListeners(
 	painterRoot: HTMLElement,
-	that:HandlerProxy,
+	that: HandlerProxy,
 	opts?: boolean | AddEventListenerOptions
 ) {
 	Object.keys(localDOMHandlers).forEach(eventName => {
@@ -41,11 +39,10 @@ export default class HandlerProxy {
 		this.painterRoot = painterRoot;
 		this.storage = storage;
 		//初始化监听时间
-		mountLocalDOMEventListeners(this.painterRoot,this);
+		mountLocalDOMEventListeners(this.painterRoot, this);
 	}
 	trigger(eventName: string, event: any) {
 		const h = this.$handler;
-		console.log(h)
 		h.dispatchToElement(eventName, event);
 	}
 }

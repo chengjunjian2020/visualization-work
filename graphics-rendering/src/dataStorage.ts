@@ -1,7 +1,7 @@
 import { Graphic } from "./graphic/type";
 
 export default class DataStorage {
-	private shapeList: Graphic[];
+	shapeList: Graphic[];
 	constructor() {
 		this.shapeList = [];
 	}

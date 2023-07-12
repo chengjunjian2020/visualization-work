@@ -18,10 +18,10 @@ export interface IGrenderOps {
 export class Grender {
 	layer: [];
 	allShapes: DataStorage;
-	dataStorage:DataStorage
-	ctx: CanvasRenderingContext2D;
+	dataStorage: DataStorage;
+	// ctx: CanvasRenderingContext2D;
 	painter: Painter;
-	handler: Handler
+	handler: Handler;
 	constructor(root: HTMLCanvasElement, optins: IGrenderOps) {
 		this.init(root, optins);
 	}
@@ -31,29 +31,27 @@ export class Grender {
 		}
 		//存储图形容器
 		this.dataStorage = new DataStorage();
-		this.painter = new Painter(root, options);
-		const handlerProxy = new HandlerProxy(root,this.painter.getContainer(),this.dataStorage);
-		
-		this.handler = new Handler({handlerProxy,grender:this,storage:this.dataStorage})
+		this.painter = new Painter(root, options, this.dataStorage);
+		const handlerProxy = new HandlerProxy(
+			root,
+			this.painter.getContainer(),
+			this.dataStorage
+		);
+
+		this.handler = new Handler({
+			handlerProxy,
+			grender: this,
+			storage: this.dataStorage,
+		});
 	}
 	add(shape: Graphic) {
+		shape.bingContext(this);
 		this.dataStorage.addShape(shape);
-		// this.refresh();
+		this.refresh();
 	}
-	// clear() {
-	// 	const { ctx, canvas } = this;
-	// 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	// }
-	// refresh() {
-	// 	const { allShapes, ctx } = this;
-	// 	this.clear();
-	// 	allShapes.forEach(shape => {
-	// 		shape.draw(ctx);
-	// 		// const { allShapes } = this;
-	// 		// const curShape = shape.getBounding();
-	// 		//相交图形
-	// 		// const intersectShaps = allShapes.filter(shapeItem =>
-	// 		//    shape !== shapeItem && shapeItem.getBounding().intersectsBox(curShape))
-	// 	});
-	// }
+
+	refresh() {
+		this.painter.clear();
+		this.painter.refresh();
+	}
 }

@@ -72,5 +72,19 @@ export class Rect extends Shape {
 		}
 		return false;
 	}
+	changePosition({ x, y }: { x: number; y: number }) {
+		const { shape: _shape } = this.props;
+		const { bindRender } = this;
+		this.props.shape = {
+			..._shape,
+			x,
+			y,
+		};
+		bindRender.refresh();
+	}
+	getPosition() {
+		const { x, y } = this.props.shape;
+		return { x, y };
+	}
 }
 mixins(Rect);

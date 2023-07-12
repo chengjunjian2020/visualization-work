@@ -1,3 +1,4 @@
+import DataStorage from "/dataStorage";
 import { IGrenderOps } from "/grender";
 import { disableUserSelect } from "/tool/dom";
 
@@ -36,14 +37,19 @@ function createCanvas(options: IGrenderOps) {
 export class Painter {
 	root: HTMLElement; //dom容器
 
-	private wrapperDom: HTMLElement; //包裹canvas的容器
+	private painterRoot: HTMLElement; //包裹canvas的容器
 
 	private canvas: HTMLElement;
-	constructor(root: HTMLElement, options: IGrenderOps) {
-		this.initPainter(root, options);
+
+	storage: DataStorage;
+
+	ctx: CanvasRenderingContext2D;
+	constructor(root: HTMLElement, options: IGrenderOps, storage: DataStorage) {
+		this.initPainter(root, options, storage);
 	}
-	initPainter(root: HTMLElement, options: IGrenderOps) {
+	initPainter(root: HTMLElement, options: IGrenderOps, storage: DataStorage) {
 		this.root = root;
+		this.storage = storage;
 		const rootStyle = root.style;
 		if (rootStyle) {
 			disableUserSelect(root);
@@ -51,14 +57,30 @@ export class Painter {
 		}
 		const width = options.width || root.offsetWidth;
 		const height = options.height || root.offsetHeight;
-		const painterRoot = (this.wrapperDom = createRoot(width, height));
+		//创建canvas的容器
+		const painterRoot = (this.painterRoot = createRoot(width, height));
 		root.appendChild(painterRoot);
-		this.wrapperDom = painterRoot;
-		const canvas = createCanvas({width,height});
+		this.painterRoot = painterRoot;
+		//创建canvas
+		const canvas = createCanvas({ width, height });
 		painterRoot.append(canvas);
 		this.canvas = canvas;
+		//初始化context上下文
+		this.ctx = canvas.getContext("2d");
 	}
-	getContainer(){
-		return this.wrapperDom
+	clear() {
+		const { ctx, canvas } = this;
+		ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+	}
+
+	getContainer() {
+		return this.painterRoot;
+	}
+	refresh() {
+		this.clear();
+		const { storage, ctx } = this;
+		storage.getData().forEach(shape => {
+			shape.draw(ctx);
+		});
 	}
 }
