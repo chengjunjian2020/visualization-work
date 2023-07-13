@@ -1,4 +1,5 @@
 import { Shape } from "./shape";
+import { GraphicType } from "/enum/graphicEnum";
 import { Grender } from "/grender";
 import mixins, { setShapeStyle } from "/mixin/shape";
 import { ShapeEvent } from "/types/event";
@@ -22,6 +23,7 @@ export class Rect extends Shape {
 		},
 		style: null,
 	};
+	type = GraphicType.RECT;
 	curCtx: CanvasRenderingContext2D; //绑定的canvas ctx上下文
 	constructor(props: IRect) {
 		super();

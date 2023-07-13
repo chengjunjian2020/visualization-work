@@ -1,6 +1,8 @@
 import Draggable, { DrddableTarget } from "./core/draggable";
 import HandlerProxy from "./core/handlerProxy";
+import { Point2d } from "./core/point";
 import DataStorage from "./dataStorage";
+import { GraphicType } from "./enum/graphicEnum";
 import { Graphic } from "./graphic/type";
 import { Grender } from "./grender";
 import { generateEvent } from "./tool/dom";
@@ -64,54 +66,14 @@ export default class Handler {
 			}
 		}
 	}
-	// curDraffableShape(event: MouseEvent) {
-	// 	const { shapeList } = this.storage;
-	// 	for (let i = shapeList.length - 1; i >= 0; i--) {
-	// 		const shape = shapeList[i];
-	// 		const newsEvent = generateEvent(event, shape.stopPropagation);
-	// 		if (shape.isPointInClosedRegion(newsEvent)) {
-	// 			try {
-	// 				this.curShape = shape;
-	// 			} catch (e) {
-	// 				console.warn(shape);
-	// 				console.log(this);
-	// 				console.log(e);
-	// 			}
-
-	// 			shapeList.splice(
-	// 				shapeList.length,
-	// 				0,
-	// 				shapeList.splice(i, 1)[0]
-	// 			);
-	// 			break;
-	// 		}
-	// 	}
-	// }
-	draggableToMouseMove(event: MouseEvent, drggable: DrddableTarget) {
+	handlerShapeLevel(event: MouseEvent) {
 		const { shapeList } = this.storage;
-		const { grender } = this;
-		const { dragStart, dragMove } = drggable;
-		const el = grender.painter.getContainer();
-		const bounding = el.getBoundingClientRect();
-		let curShapes;
-		console.log(event);
 		for (let i = shapeList.length - 1; i >= 0; i--) {
 			const shape = shapeList[i];
 			const newsEvent = generateEvent(event, shape.stopPropagation);
 			if (shape.isPointInClosedRegion(newsEvent)) {
-				try {
-					curShapes = shape;
-					// if()
-					shape.changePosition({
-						x: dragMove.x,
-						y: dragMove.y,
-					});
-				} catch (e) {
-					console.warn(shape);
-					console.log(this);
-					console.log(e);
-				}
-
+				console.log(this);
+				this.curShape = shape;
 				shapeList.splice(
 					shapeList.length,
 					0,
@@ -120,18 +82,84 @@ export default class Handler {
 				break;
 			}
 		}
-		if (!curShapes) {
+		console.log("--");
+		return this.curShape;
+	}
+	draggableToMouseDown(event: MouseEvent): {
+		curShape: Graphic;
+		dragStart: DrddableTarget["dragStart"];
+	} {
+		const curShape = this.handlerShapeLevel(event);
+		if (!curShape) {
+			return {
+				curShape: null,
+				dragStart: null,
+			};
+		}
+		const { type } = curShape;
+		if (type !== GraphicType.POLYGON) {
+			this.draggleConventionGraphic(event, curShape);
+		} else {
+			//处理多边形
+			this.dragglePolygon(event, curShape);
+		}
+		return {
+			curShape,
+			dragStart: {
+				x: 0,
+				y: 0,
+			},
+		};
+	}
+	dragglePolygon(event: MouseEvent, curShape: Graphic) {
+		const pointsList: Array<Record<string, number>> =
+			curShape.getPosition();
+		const dragglePointsList = pointsList.map(points => {
+			const x = event.clientX - points.x;
+			const y = event.clientY - points.y;
+			return new Point2d(x, y);
+		});
+		curShape.props.shape = dragglePointsList;
+	}
+	//处理常规图形拖拽
+	draggleConventionGraphic(event: MouseEvent, curShape: Graphic) {
+		const { x, y } = curShape.getPosition();
+
+		const dragStart = {
+			x: event.clientX - x,
+			y: event.clientY - y,
+		};
+		return {
+			dragStart,
+			curShape,
+		};
+	}
+	draggableToMouseMove(event: MouseEvent, drggable: DrddableTarget) {
+		const { grender, curShape } = this;
+		const { dragStart } = drggable;
+
+		if (!curShape) {
 			return;
 		}
-		const { x, y } = curShapes.getPosition();
-		// const startMouseX = dragStart.x - bounding.left - x;
-		// const startMouseY = dragStart.y - bounding.top - y;
+		const mouseX = event.clientX - dragStart.x;
+		const mouseY = event.clientY - dragStart.y;
 
-		// const dragMouseX = dragMove.x - bounding.left - startMouseX;
-		// const dragMousey = dragMove.y - bounding.top - startMouseY;
-		// curShapes.changePosition({
-		// 	x: dragMove.x,
-		// 	y: dragMove.y,
-		// });
+		const dragMove = {
+			x: mouseX,
+			y: mouseY,
+		};
+		const { shape } = curShape.props;
+		curShape.change(
+			{
+				shape: {
+					...shape,
+					...dragMove,
+				},
+			},
+			grender
+		);
+	}
+	draggableToMouseOut() {
+		this.curShape = null;
 	}
 }

@@ -5,8 +5,13 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
 		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
 			#main {
 				border: 1px solid red;
+				margin-left: 100px;
 			}
 		</style>
 	</head>
@@ -16,9 +21,9 @@
 			import { Grender, Circle, Rect, Polygon } from "../lib/index.js";
 			const grender = new Grender(document.getElementById("main"), {});
 			const circle = new Circle({
-				shape: { x: 50, y: 50, r: 20 },
+				shape: { x: 90, y: 90, r: 40 },
 				style: {
-					fillStyle: "red",
+					fillStyle: "pink",
 				},
 			});
 			const circle2 = new Circle({
@@ -45,30 +50,30 @@
 			grender.add(circle);
 			grender.add(circle2);
 			grender.add(rect);
-			grender.add(polygon);
-			circle.on("click", e => {
-				console.log("点击圆");
-			});
-			circle2.on("click", e => {
-				e.stopPropagation();
-				console.log("点击圆2");
-			});
-			rect.on("click", e => {
-				console.log("点击矩形");
-			});
-			polygon.on("click", e => {
-				console.log("点击多边形");
-			});
+			// grender.add(polygon);
+			// circle.on("click", e => {
+			// 	console.log("点击圆");
+			// });
+			// circle2.on("click", e => {
+			// 	e.stopPropagation();
+			// 	console.log("点击圆2");
+			// });
+			// rect.on("click", e => {
+			// 	console.log("点击矩形");
+			// });
+			// polygon.on("click", e => {
+			// 	console.log("点击多边形");
+			// });
 			setTimeout(() => {
-				circle.change(
-					{
-						shape: { x: 50, y: 50, r: 30 },
-						style: {
-							fillColor: "blue",
-						},
-					},
-					grender
-				);
+				// circle.change(
+				// 	{
+				// 		shape: { x: 50, y: 50, r: 30 },
+				// 		style: {
+				// 			fillColor: "blue",
+				// 		},
+				// 	},
+				// 	grender
+				// );
 			}, 3000);
 		</script>
 	</body>

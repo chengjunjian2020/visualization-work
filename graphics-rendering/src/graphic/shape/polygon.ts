@@ -1,5 +1,6 @@
 import { Point2d } from "/core/point";
 import { Seg2d } from "/core/seg2d";
+import { GraphicType } from "/enum/graphicEnum";
 import { Shape } from "/index";
 import { setShapeStyle } from "/mixin/shape";
 import { ShapeEvent } from "/types/event";
@@ -12,6 +13,7 @@ interface IPolygon {
 }
 export class Polygon extends Shape {
 	props: IPolygon;
+	type = GraphicType.POLYGON;
 	constructor(props: IPolygon) {
 		super();
 		this.initPolygon(props);
@@ -21,6 +23,12 @@ export class Polygon extends Shape {
 			point => new Point2d(point.x, point.y)
 		);
 		this.props = props;
+	}
+	getPosition() {
+		return this.props.shape.points.map(point => ({
+			x: point.x,
+			y: point.y,
+		}));
 	}
 	getDispersed() {
 		return this.props.shape.points;

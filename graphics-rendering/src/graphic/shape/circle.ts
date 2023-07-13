@@ -6,6 +6,7 @@ import { Box2 } from "/core/box2";
 import { Point2d } from "/core/point";
 import type { Graphic } from "../type";
 import { ShapeEvent } from "/types/event";
+import { GraphicType } from "/enum/graphicEnum";
 interface ICircle {
 	shape: {
 		x: number;
@@ -23,6 +24,7 @@ export class Circle extends Shape {
 		},
 		style: null,
 	};
+	type = GraphicType.CIRCLE;
 	constructor(props: ICircle) {
 		super();
 		this.initCircle(props);
@@ -71,8 +73,8 @@ export class Circle extends Shape {
 		bindRender.refresh();
 	}
 	getPosition() {
-		const { x, y } = this.props.shape;
-		return { x, y };
+		const { x, y, r } = this.props.shape;
+		return { x, y, width: r };
 	}
 }
 mixins(Circle);

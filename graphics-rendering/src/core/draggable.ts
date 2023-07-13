@@ -1,3 +1,4 @@
+import type { Shape } from "/graphic";
 import Handler from "/handler";
 
 export interface DrddableTarget {
@@ -5,15 +6,12 @@ export interface DrddableTarget {
 		x: number;
 		y: number;
 	} | null;
-	dragMove: {
-		x: number;
-		y: number;
-	} | null;
+	target: Shape;
 }
 export default class Draggable {
 	private drggable: DrddableTarget = {
 		dragStart: null,
-		dragMove: null,
+		target: null,
 	};
 	private _handler;
 	private $el;
@@ -21,17 +19,12 @@ export default class Draggable {
 		const dom = handler.grender.painter.getContainer();
 		this._handler = handler;
 		this.$el = dom;
-		// this.dragBindEvent(dom);
-		dom.addEventListener("mousedown", this.dragStart.bind(this));
-		dom.addEventListener("mousemove", this.dragMove.bind(this));
-		dom.addEventListener("mouseup", this.dragEnd.bind(this));
+		this.dragBindEvent(dom);
 	}
 	private dragBindEvent(el: HTMLElement) {
 		el.onmousedown = event => {
 			this.dragStart(event);
 			window.onmousemove = event => {
-				console.log("--->");
-				// event.preventDefault();
 				this.dragMove(event);
 			};
 			window.onmouseup = event => {
@@ -42,35 +35,29 @@ export default class Draggable {
 	}
 	private dragStart(e: MouseEvent) {
 		e.preventDefault();
+		const { curShape: target, dragStart } =
+			this._handler.draggableToMouseDown(e);
 		this.drggable = {
 			...this.drggable,
-			dragStart: {
-				x: e.x,
-				y: e.y,
-			},
+			dragStart,
+			target,
 		};
 	}
 	private dragMove(e: MouseEvent) {
-		// e.preventDefault();
+		e.preventDefault();
 		const { dragStart } = this.drggable;
 		if (!dragStart) {
 			return;
 		}
-		const rect = this.$el.getBoundingClientRect();
-		this.drggable = {
-			...this.drggable,
-			dragMove: {
-				x: e.x - rect.left,
-				y: e.y - rect.top,
-			},
-		};
+
 		this._handler.draggableToMouseMove(e, this.drggable);
 	}
 	private dragEnd(e: MouseEvent) {
 		e.preventDefault();
 		this.drggable = {
 			dragStart: null,
-			dragMove: null,
+			target: null,
 		};
+		this._handler.draggableToMouseOut();
 	}
 }
