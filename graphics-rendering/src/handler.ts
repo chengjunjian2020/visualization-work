@@ -72,7 +72,6 @@ export default class Handler {
 			const shape = shapeList[i];
 			const newsEvent = generateEvent(event, shape.stopPropagation);
 			if (shape.isPointInClosedRegion(newsEvent)) {
-				console.log(this);
 				this.curShape = shape;
 				shapeList.splice(
 					shapeList.length,
@@ -82,14 +81,10 @@ export default class Handler {
 				break;
 			}
 		}
-		console.log("--");
-		return this.curShape;
+		return { curShape: this.curShape };
 	}
-	draggableToMouseDown(event: MouseEvent): {
-		curShape: Graphic;
-		dragStart: DrddableTarget["dragStart"];
-	} {
-		const curShape = this.handlerShapeLevel(event);
+	draggableToMouseDown(event: MouseEvent) {
+		const { curShape } = this.handlerShapeLevel(event);
 		if (!curShape) {
 			return {
 				curShape: null,
@@ -98,30 +93,82 @@ export default class Handler {
 		}
 		const { type } = curShape;
 		if (type !== GraphicType.POLYGON) {
-			this.draggleConventionGraphic(event, curShape);
+			const { dragStart } = this.draggleConventionGraphic(
+				event,
+				this.curShape
+			);
+			return {
+				dragStart,
+				curShape,
+			};
 		} else {
-			//处理多边形
-			this.dragglePolygon(event, curShape);
+			return {
+				dragStart: {
+					x: event.clientX,
+					y: event.clientY,
+				},
+				curShape,
+			};
 		}
-		return {
-			curShape,
-			dragStart: {
-				x: 0,
-				y: 0,
-			},
-		};
 	}
-	dragglePolygon(event: MouseEvent, curShape: Graphic) {
+	dragglePolygon(
+		event: MouseEvent,
+		drggable: DrddableTarget,
+		curShape: Graphic
+	) {
 		const pointsList: Array<Record<string, number>> =
 			curShape.getPosition();
+		const _shape = curShape.props.shape;
+		const { dragStart } = drggable;
 		const dragglePointsList = pointsList.map(points => {
-			const x = event.clientX - points.x;
-			const y = event.clientY - points.y;
-			return new Point2d(x, y);
+			const moveX = points.x + (event.clientX - dragStart.x);
+			const moveY = points.y + (event.clientY - dragStart.y);
+			return new Point2d(moveX, moveY);
 		});
-		curShape.props.shape = dragglePointsList;
+		drggable.dragStart.x = event.clientX;
+		drggable.dragStart.y = event.clientY;
+		curShape.change(
+			{
+				shape: {
+					..._shape,
+					points: dragglePointsList,
+				},
+			},
+			this.grender
+		);
 	}
-	//处理常规图形拖拽
+
+	draggableToMouseMove(event: MouseEvent, drggable: DrddableTarget) {
+		const { grender, curShape } = this;
+		const { dragStart } = drggable;
+
+		if (!curShape) {
+			return;
+		}
+		// this.dragglePolygon(event, this.curShape);
+		if (curShape.type !== GraphicType.POLYGON) {
+			const mouseX = event.clientX - dragStart.x;
+			const mouseY = event.clientY - dragStart.y;
+
+			const dragMove = {
+				x: mouseX,
+				y: mouseY,
+			};
+			const { shape } = curShape.props;
+			curShape.change(
+				{
+					shape: {
+						...shape,
+						...dragMove,
+					},
+				},
+				grender
+			);
+		} else {
+			//多边形
+			this.dragglePolygon(event, drggable, curShape);
+		}
+	}
 	draggleConventionGraphic(event: MouseEvent, curShape: Graphic) {
 		const { x, y } = curShape.getPosition();
 
@@ -131,33 +178,7 @@ export default class Handler {
 		};
 		return {
 			dragStart,
-			curShape,
 		};
-	}
-	draggableToMouseMove(event: MouseEvent, drggable: DrddableTarget) {
-		const { grender, curShape } = this;
-		const { dragStart } = drggable;
-
-		if (!curShape) {
-			return;
-		}
-		const mouseX = event.clientX - dragStart.x;
-		const mouseY = event.clientY - dragStart.y;
-
-		const dragMove = {
-			x: mouseX,
-			y: mouseY,
-		};
-		const { shape } = curShape.props;
-		curShape.change(
-			{
-				shape: {
-					...shape,
-					...dragMove,
-				},
-			},
-			grender
-		);
 	}
 	draggableToMouseOut() {
 		this.curShape = null;

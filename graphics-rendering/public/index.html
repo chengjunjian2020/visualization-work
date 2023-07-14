@@ -39,7 +39,7 @@
 			const polygon = new Polygon({
 				shape: {
 					points: [
-						{ x: 300, y: 320 },
+						{ x: 0, y: 320 },
 						{ x: 380, y: 400 },
 						{ x: 120, y: 400 },
 						{ x: 20, y: 110 },
@@ -50,20 +50,20 @@
 			grender.add(circle);
 			grender.add(circle2);
 			grender.add(rect);
-			// grender.add(polygon);
-			// circle.on("click", e => {
-			// 	console.log("点击圆");
-			// });
-			// circle2.on("click", e => {
-			// 	e.stopPropagation();
-			// 	console.log("点击圆2");
-			// });
-			// rect.on("click", e => {
-			// 	console.log("点击矩形");
-			// });
-			// polygon.on("click", e => {
-			// 	console.log("点击多边形");
-			// });
+			grender.add(polygon);
+			circle.on("click", e => {
+				console.log("点击圆");
+			});
+			circle2.on("click", e => {
+				e.stopPropagation();
+				console.log("点击圆2");
+			});
+			rect.on("click", e => {
+				console.log("点击矩形");
+			});
+			polygon.on("click", e => {
+				console.log("点击多边形");
+			});
 			setTimeout(() => {
 				// circle.change(
 				// 	{

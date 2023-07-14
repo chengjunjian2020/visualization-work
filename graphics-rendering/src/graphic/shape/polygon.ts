@@ -3,6 +3,7 @@ import { Seg2d } from "/core/seg2d";
 import { GraphicType } from "/enum/graphicEnum";
 import { Shape } from "/index";
 import { setShapeStyle } from "/mixin/shape";
+import mixins from "/mixin/shape";
 import { ShapeEvent } from "/types/event";
 
 interface IPolygon {
@@ -69,3 +70,4 @@ export class Polygon extends Shape {
 		return false;
 	}
 }
+mixins(Polygon);

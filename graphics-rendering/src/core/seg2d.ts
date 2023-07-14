@@ -78,6 +78,7 @@ export class Seg2d {
 	}
 	//一堆点 获得闭合一堆线段
 	static getSegments(points: Array<Point2d>, closed = false) {
+		console.log(points);
 		const list = [];
 		for (let i = 1; i < points.length; i++) {
 			list.push(new Seg2d(points[i - 1], points[i]));
