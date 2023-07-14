@@ -10,7 +10,6 @@ import HandlerProxy from "./core/handlerProxy";
 import Handler from "./handler";
 export const move = "mousemove";
 export const click = "mousedown";
-//冒泡处理 层级处理 多边形事件 图形拖拽 移除事件 画布拖
 export interface IGrenderOps {
 	width: number;
 	height: number;

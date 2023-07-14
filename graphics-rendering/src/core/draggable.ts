@@ -22,16 +22,11 @@ export default class Draggable {
 		this.dragBindEvent(dom);
 	}
 	private dragBindEvent(el: HTMLElement) {
-		el.onmousedown = event => {
+		el.addEventListener("onmousedown", (event: MouseEvent) => {
 			this.dragStart(event);
-			window.onmousemove = event => {
-				this.dragMove(event);
-			};
-			window.onmouseup = event => {
-				event.preventDefault();
-				this.dragEnd(event);
-			};
-		};
+			window.addEventListener("onmousemove", this.dragMove.bind(this));
+			window.addEventListener("onmouseup", this.dragEnd.bind(this));
+		});
 	}
 	private dragStart(e: MouseEvent) {
 		e.preventDefault();
