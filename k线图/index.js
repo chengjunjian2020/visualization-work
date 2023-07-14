@@ -67,12 +67,7 @@ class KLineChart extends AxisChart {
       }
       const cur = lines[i];
       const prev = lines[i - 1];
-      console.log({
-        x1: prev.x,
-        y1: prev.y,
-        x2: cur.x,
-        y2: cur.y,
-      });
+
       // drawCanvas.ctx.lineJoin = 'round';
       // drawCanvas.ctx.lineCap = 'round';
       drawCanvas.lineTo(
@@ -87,12 +82,6 @@ class KLineChart extends AxisChart {
         }
       );
     }
-    // lines.reduce((prev,next)=>{
-    //   if(prev && prev.x && prev.y){
-    //     console.log(prev);
-    //     console.log(next);
-    //   }
-    // },[])
   }
   gerernateRect(numList, i) {
     const { width, left, xAxis, dataMax, stepSize } = this;
