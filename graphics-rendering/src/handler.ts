@@ -84,8 +84,10 @@ export default class Handler {
 		return { curShape: this.curShape };
 	}
 	draggableToMouseDown(event: MouseEvent) {
+		console.log("_")
 		const { curShape } = this.handlerShapeLevel(event);
-		if (!curShape) {
+		this.grender.refresh();
+		if (!curShape || !curShape.draggable) {
 			return {
 				curShape: null,
 				dragStart: null,

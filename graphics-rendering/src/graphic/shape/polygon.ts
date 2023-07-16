@@ -11,12 +11,13 @@ interface IPolygon {
 		points: Array<Point2d>;
 	};
 	style: CanvasRenderingContext2D;
+	[key:string]:any
 }
 export class Polygon extends Shape {
 	props: IPolygon;
 	type = GraphicType.POLYGON;
 	constructor(props: IPolygon) {
-		super();
+		super(props);
 		this.initPolygon(props);
 	}
 	initPolygon(props: IPolygon) {

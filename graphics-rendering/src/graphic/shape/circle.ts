@@ -14,6 +14,7 @@ interface ICircle {
 		r: number;
 	};
 	style: CanvasRenderingContext2D;
+	[key:string]:any
 }
 export class Circle extends Shape {
 	props: ICircle = {
@@ -26,7 +27,7 @@ export class Circle extends Shape {
 	};
 	type = GraphicType.CIRCLE;
 	constructor(props: ICircle) {
-		super();
+		super(props);
 		this.initCircle(props);
 	}
 	initCircle(props: ICircle) {

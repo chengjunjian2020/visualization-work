@@ -12,6 +12,7 @@ interface IRect {
 		height: number;
 	};
 	style: CanvasRenderingContext2D;
+	[key:string]:any
 }
 export class Rect extends Shape {
 	props: IRect = {
@@ -26,7 +27,7 @@ export class Rect extends Shape {
 	type = GraphicType.RECT;
 	curCtx: CanvasRenderingContext2D; //绑定的canvas ctx上下文
 	constructor(props: IRect) {
-		super();
+		super(props);
 		this.initRect(props);
 	}
 	initRect(props: IRect) {
